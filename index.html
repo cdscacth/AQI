@@ -1,6 +1,6 @@
 <!DOCTYPE html>
     <html>
-		<head>  
+		<head>
             <title>Aktueller AQI an der CDSC</title>
             <meta charset="utf-8" />
             <meta name="msapplication-TileColor" content="#E59866"/>
@@ -56,10 +56,10 @@
                 if (XML.readyState == 4) {
                         var data;
                         data = XML.responseText;
-                        
+
                         var dataSplitArray = data.split(";");
                         console.log(dataSplitArray);
-                        
+
                         var _36pm25 = dataSplitArray[1];
                         console.log(_36pm25);
                         var _36pm10 = dataSplitArray[2];
@@ -74,7 +74,7 @@
                             _36time = _36Datum.getTime();
                             if (stunde >= 10) {
                                 var _36zeit = "Stündlicher Wert vom <b>" + zeitarr[2] + "." + zeitarr[1] + "." + zeitarr[0] + "</b> um <b>" + stunde + ":" + zeitarr[4] + ":" + zeitarr[5] + "</b>";
-                                
+
                             } else {
                                 var _36zeit = "Stündlicher Wert vom <b>" + zeitarr[2] + "." + zeitarr[1] + "." + zeitarr[0] + "</b> um <b> 0" + stunde + ":" + zeitarr[4] + ":" + zeitarr[5] + "</b>";
                             }
@@ -85,19 +85,19 @@
                             _36pm25 = parseFloat(_36pm25).toFixed(2);
                             _36pm10 = parseFloat(_36pm10).toFixed(2);
                         }
-                        
+
                         document.getElementById("36zeit").innerHTML = _36zeit;
                         document.getElementById("36pm25").innerHTML = _36pm25;
                         document.getElementById("36pm10").innerHTML = _36pm10;
-                        
+
 
                         //CDSC-Werte
                         var CDSCpm25 = dataSplitArray[4];
                         console.log(CDSCpm25);
-                        
+
                         var CDSCpm10 = dataSplitArray[6];
                         console.log(CDSCpm10);
-                        
+
                         var CDSCzeitstr = dataSplitArray[3];
                         var CDSCDatum = new Date(CDSCzeitstr);
                         CDSCDatum.setHours(CDSCDatum.getHours()+7);
@@ -120,12 +120,12 @@
                         //GIS-Werte
                         var GISpm25 = dataSplitArray[9];
                         console.log(GISpm25);
-                        
+
                         var GISpm10 = dataSplitArray[11];
                         console.log(GISpm10);
-                        
+
                         var GISzeitstr = dataSplitArray[8];
-                        
+
                         var GISDatum = new Date(GISzeitstr);
                         GISDatum.setHours(GISDatum.getHours()+7);
 
@@ -144,7 +144,7 @@
                         document.getElementById("GISzeit").innerHTML = GISzeit;
                         document.getElementById("GISpm25").innerHTML = GISpm25;
                         document.getElementById("GISpm10").innerHTML = GISpm10;
-                        
+
                         //CallFunctions
                         aqipm25();
                         aqipm10();
@@ -152,7 +152,7 @@
                         compareaqi();
                     }
                 }
-                
+
                 function setData(pm10, pm25) {
                     document.getElementById("36pm25").innerHTML = pm25;
                     document.getElementById("36pm10").innerHTML = pm10;
@@ -170,18 +170,18 @@
                     compareaqi();
                 }
 
-                function aqipm25() { 
+                function aqipm25() {
                     calcaqi25("36pm25", "36aqi25", "AQI2536");
-                            
+
                     calcaqi25("CDSCpm25", "CDSCaqi25","AQI25CDSC");
 
                     calcaqi25("GISpm25", "GISaqi25" ,"AQI25GIS");
                 }
-                
+
                 function aqipm10() {
 
                     calcaqi10("36pm10", "36aqi10", "AQI1036");
-                            
+
                     calcaqi10("CDSCpm10", "CDSCaqi10","AQI10CDSC");
 
                     calcaqi10("GISpm10", "GISaqi10" ,"AQI10GIS");
@@ -196,24 +196,24 @@
                     var GISaqi10 = document.getElementById("GISaqi10").innerHTML;
                     var arrayAQI10 = [];
                     var arrayAQI25 = [];
-                    
+
                     if (_36pm25 != "Kein PM2.5-Wert") {
-                        var i = arrayAQI25.length; 
+                        var i = arrayAQI25.length;
                         arrayAQI25[i] = parseFloat(_36pm25);
-                    } 
+                    }
 
                     if (GISaqi25 != "Kein PM2.5-Wert") {
-                        var i = arrayAQI25.length; 
+                        var i = arrayAQI25.length;
                         arrayAQI25[i] = parseFloat(GISaqi25);
                     }
-                    
+
                     if (_36pm10 != "Kein PM10-Wert") {
-                        var i = arrayAQI10.length; 
+                        var i = arrayAQI10.length;
                         arrayAQI10[i] = parseFloat(_36pm10);
                     }
 
                     if (GISaqi10 != "Kein PM10-Wert") {
-                        var i = arrayAQI10.length; 
+                        var i = arrayAQI10.length;
                         arrayAQI10[i] = parseFloat(GISaqi10);
                     }
 
@@ -226,7 +226,7 @@
 
                     var aqiavg25CDSC = (aqiavg25 + parseFloat(CDSCaqi25))/2;
                     console.log(aqiavg25CDSC);
-                    
+
                     document.getElementById("AQIavg25").innerHTML = aqiavg25CDSC.toFixed(2);
 
                     setColor(aqiavg25CDSC, "AQI25tr");
@@ -240,19 +240,19 @@
 
                     var aqiavg10CDSC = (aqiavg10 + parseFloat(CDSCaqi10))/2;
                     console.log(aqiavg10CDSC);
-                    
+
                     document.getElementById("AQIavg10").innerHTML = aqiavg10CDSC.toFixed(2);
 
                     setColor(aqiavg10CDSC, "AQI10tr");
-                }                
+                }
 
-                function compareaqi() {                    
+                function compareaqi() {
                     var aqiavg10 = document.getElementById("AQIavg10").innerHTML;
                     var aqiavg25 = document.getElementById("AQIavg25").innerHTML;
-                    
+
                     var aqi = Math.max(aqiavg10, aqiavg25);
                     console.log(aqi);
-                    
+
                     document.getElementById("AQI").innerHTML = aqi.toFixed(2);
 
                     setColor(aqi, "AQItr");
@@ -275,34 +275,34 @@
                         document.getElementById("actionextra").innerHTML = "-";
                     } else if (aqi < 150) {
                         document.getElementById("colordesc").innerHTML = "Ungesund für sensible Gruppen (AQI 100 - 149)";
-                        document.getElementById("action").innerHTML = "<li>Fenster und Türen bleiben geschlossen. Klimaanlagen werden eingeschaltet.<li>Sportunterricht / AGs finden nur mit geringen Belastungen statt!</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt!</li>";
+                        document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Sportunterricht / AGs finden nur mit geringen Belastungen statt!</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt!</li>";
                         document.getElementById("action").style.textAlign = "left";
                         document.getElementById("action").style.paddingLeft = "25px";
                         document.getElementById("actionextra").innerHTML = "-";
                     } else if (aqi < 200) {
                         document.getElementById("colordesc").innerHTML = "Ungesund (AQI 150 - 199)";
-                        document.getElementById("action").innerHTML = "<li>Fenster und Türen bleiben geschlossen. Klimaanlagen werden eingeschaltet.<li>Alle Schüler und Kindergartenkinder halten sich nach Möglichkeit den ganzen Tag nur in den Räumen auf!</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Die Sport AGs entfallen!</li>";
+                        document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Die Sport AGs entfallen*!</li>";
                         document.getElementById("action").style.textAlign = "left";
                         document.getElementById("action").style.paddingLeft = "25px";
                         document.getElementById("actionextra").innerHTML = "* Entscheidung und Bekanntgabe zu AGs am Nachmittag um 13:15 Uhr";
                     } else if (aqi < 300) {
                         document.getElementById("colordesc").innerHTML = "Sehr Ungesund (AQI 200 - 299)";
-                        document.getElementById("action").innerHTML = "<li>Fenster und Türen bleiben geschlossen. Klimaanlagen werden eingeschaltet.<li>Alle Schüler und Kindergartenkinder halten sich nach Möglichkeit den ganzen Tag nur in den Räumen auf!</li><li>In den Pausen bleiben die Schüler im Klassenzimmer. Das Mittagessen findet im Klassenzimmer statt.</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Die Sport AGs entfallen!</li><li>Nach Möglichkeit tragen alle außerhalb des Unterrichts Schutzmasken.</li>";
+                        document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Die Sport AGs entfallen!</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Schulschluss nach dem Mittagessen.*</li>";
                         document.getElementById("action").style.textAlign = "left";
                         document.getElementById("action").style.paddingLeft = "25px";
-                        document.getElementById("actionextra").innerHTML = "* AGs werden abgesagt, sobald der Wert am Vormittag für zwei Stunden >200 ist";
-                    } else if (aqi < 400) {
+                        document.getElementById("actionextra").innerHTML = "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine bleibt in Absprache mit der Schulleitung geöffnet. Das Mittagessen kann im Klassenraum eingenommen werden.";
+                    } else if (aqi < 350) {
                         document.getElementById("colordesc").innerHTML = "Gesundheitsschädigend (AQI 300 - 399)";
-                        document.getElementById("action").innerHTML = "<li>Fenster und Türen bleiben geschlossen. Klimaanlagen werden eingeschaltet.<li>Alle Schüler und Kindergartenkinder halten sich nach Möglichkeit den ganzen Tag nur in den Räumen auf!</li><li>In den Pausen bleiben die Schüler im Klassenzimmer. Die Kantine bleibt geschlossen.</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Die Sport AGs entfallen!</li><li>Nach Möglichkeit tragen alle außerhalb des Unterrichts Schutzmasken.</li><li>Schulschluss um 13:05 Uhr</li>";
+                        document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich in geschlossenen Räumen auf.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Schutzmasken werden zur Verfügung gestellt und nach Möglichkeit getragen.</li><li>Schulschluss zum Mittagessen.*</li>";
                         document.getElementById("action").style.textAlign = "left";
                         document.getElementById("action").style.paddingLeft = "25px";
-                        document.getElementById("actionextra").innerHTML = "* Schulschluss ab 13:05 Uhr, sobald der Wert am Vormittag für zwei Stunden >300 ist";
-                    } else if (aqi >= 400) {
+                        document.getElementById("actionextra").innerHTML = "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine wird in Absprache mit der Schulleitung geschlossen. GGf. kann das Mittagessen noch im Klassenraum eingenommen werden.";
+                    } else if (aqi >= 350) {
                         document.getElementById("colordesc").innerHTML = "Gefährlich (AQI ab 400)";
-                        document.getElementById("action").innerHTML = "Schulfrei.";
+                        document.getElementById("action").innerHTML = "Schulfrei.*";
                         document.getElementById("action").style.textAlign = "center";
                         document.getElementById("action").style.paddingLeft = "0px";
-                        document.getElementById("actionextra").innerHTML = "* Schulfrei, wenn der Durchschnittswert von 5:00 Uhr bis 7:00 Uhr >400 ist. Entscheidung und Bekanntgabe um 7:15Uhr";
+                        document.getElementById("actionextra").innerHTML = "* Schulfrei, wenn der Durchschnittswert von 5:00 Uhr bis 7:00 Uhr > 350 ist. Entscheidung und Bekanntgabe durch die Schulleitung um 07:15 Uhr.";
                     }
                 }
 
@@ -315,7 +315,7 @@
                     var pm6 = 250.4;
                     var pm7 = 350.4;
                     var pm8 = 500.4;
-                    
+
                     var aqi1 = 0;
                     var aqi2 = 50;
                     var aqi3 = 100;
@@ -327,7 +327,7 @@
 
                     if (document.getElementById(pm25div).innerHTML != "-") {
                         var pm25 = parseFloat(document.getElementById(pm25div).innerHTML);
-                        
+
                         if (pm25 >= pm1 && pm25 <= pm2) {
                             var aqipm25 = ((aqi2-aqi1)/(pm2-pm1))*(pm25-pm1)+aqi1;
                         } else if (pm25 >= pm2 && pm25 <= pm3) {
@@ -345,9 +345,9 @@
                         }
                         console.log(aqipm25);
                         document.getElementById(AQI25div).innerHTML = aqipm25.toFixed(2);
-                        
+
                         setColor(aqipm25, AQI25td);
-                        
+
                     } else {
                         document.getElementById(AQI25div).innerHTML = "Kein PM2.5-Wert";
                         document.getElementById(AQI25td).style.backgroundColor = "white";
@@ -364,7 +364,7 @@
                     var pm6 = 424;
                     var pm7 = 504;
                     var pm8 = 604;
-                    
+
                     var aqi1 = 0;
                     var aqi2 = 50;
                     var aqi3 = 100;
@@ -373,10 +373,10 @@
                     var aqi6 = 300;
                     var aqi7 = 400;
                     var aqi8 = 500;
-                    
+
                     if (document.getElementById(pm10div).innerHTML !== "-") {
                         var pm10 = parseFloat(document.getElementById(pm10div).innerHTML);
-                        
+
                         if (pm10 >= pm1 && pm10 <= pm2) {
                             var aqipm10 = ((aqi2-aqi1)/(pm2-pm1))*(pm10-pm1)+aqi1;
                         } else if (pm10 >= pm2 && pm10 <= pm3) {
@@ -453,7 +453,7 @@
                         <td>
 
                             <div class="text">AQI<button id="openInfo">i</button></div>
-                            <div id="AQI">Laden...</div>  
+                            <div id="AQI">Laden...</div>
                         </td>
                     </tr>
                 </table>
@@ -509,7 +509,7 @@
                     </tr>
                 </table>
                 <br>
-                
+
                 <div id="36zeit">Laden...</div><br>
                 <table class="border">
                     <tr>
@@ -570,7 +570,7 @@
             // Get the <span> element that closes the modal
             var span = document.getElementById("close");
 
-            // When the user clicks the button, open the modal 
+            // When the user clicks the button, open the modal
             btn.onclick = function() {
                 modal.style.display = "block";
             }
@@ -673,8 +673,8 @@
                         CDSCchart.data.datasets[1].data = pm25data;
                         CDSCchart.update();
                     }
-                        
-                        
+
+
                     }
                 };
                 xml.open("GET", url, true);
