@@ -223,46 +223,46 @@ function compareaqi() {
 
 	if (aqi < 50) {
 		document.getElementById("colordesc").innerHTML = "Gut (AQI bis 49)";
-		document.getElementById("action").innerHTML = "Keine Einschränkungen.";
+		document.getElementById("action").innerHTML = "Keine Einschränkungen";
 		document.getElementById("action").style.textAlign = "center";
 		document.getElementById("action").style.paddingLeft = "0px";
 		document.getElementById("actionextra").innerHTML = "-";
 	} else if (aqi < 100) {
 		document.getElementById("colordesc").innerHTML = "Moderat (AQI 50 - 99)";
-		document.getElementById("action").innerHTML = "Keine Einschränkungen.";
+		document.getElementById("action").innerHTML = "Keine Einschränkungen";
 		document.getElementById("action").style.textAlign = "center";
 		document.getElementById("action").style.paddingLeft = "0px";
 		document.getElementById("actionextra").innerHTML = "-";
 	} else if (aqi < 150) {
 		document.getElementById("colordesc").innerHTML = "Ungesund für sensible Gruppen (AQI 100 - 149)";
-		document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Sportunterricht / AGs finden nur mit geringen Belastungen statt!</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt!</li>";
+		document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Sportunterricht & AGs finden nur mit geringen Belastungen statt.</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt.</li>";
 		document.getElementById("action").style.textAlign = "left";
 		document.getElementById("action").style.paddingLeft = "25px";
 		document.getElementById("actionextra").innerHTML = "-";
 	} else if (aqi < 200) {
 		document.getElementById("colordesc").innerHTML = "Ungesund (AQI 150 - 199)";
-		document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Die Sport AGs entfallen*!</li>";
+		document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.*</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Die Sport AGs entfallen.**</li>";
 		document.getElementById("action").style.textAlign = "left";
 		document.getElementById("action").style.paddingLeft = "25px";
-		document.getElementById("actionextra").innerHTML = "* Entscheidung und Bekanntgabe zu AGs am Nachmittag um 13:15 Uhr";
+		document.getElementById("actionextra").innerHTML = "* Die Entscheidung, ob die Andacht stattfindet oder die Klassenlehrer mit ihren Klassen in den Klassenraum gehen, wird in der Dienstbesprechung getroffen. Als Richtwert gilt ein AQI von 175.<br>** Die Entscheidung, ob die AGs stattfinden oder entfallen, wird um 13:15 Uhr von Schulleitung und Athletic Director getroffen und umgehend veröffentlicht. Gleiches gilt für CMAC Wettbewerbe.";
 	} else if (aqi < 300) {
 		document.getElementById("colordesc").innerHTML = "Sehr Ungesund (AQI 200 - 299)";
-		document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Die Sport AGs entfallen!</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Schulschluss nach dem Mittagessen.*</li>";
+		document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Schulschluss nach dem Mittagessen.*</li>";
 		document.getElementById("action").style.textAlign = "left";
 		document.getElementById("action").style.paddingLeft = "25px";
 		document.getElementById("actionextra").innerHTML = "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine bleibt in Absprache mit der Schulleitung geöffnet. Das Mittagessen kann im Klassenraum eingenommen werden.";
 	} else if (aqi < 350) {
 		document.getElementById("colordesc").innerHTML = "Gesundheitsschädigend (AQI 300 - 399)";
-		document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich in geschlossenen Räumen auf.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Schutzmasken werden zur Verfügung gestellt und nach Möglichkeit getragen.</li><li>Schulschluss zum Mittagessen.*</li>";
+		document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich in geschlossenen Räumen auf.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden zur Verfügung gestellt und nach Möglichkeit getragen.</li><li>Schulschluss zum Mittagessen.*</li>";
 		document.getElementById("action").style.textAlign = "left";
 		document.getElementById("action").style.paddingLeft = "25px";
-		document.getElementById("actionextra").innerHTML = "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine wird in Absprache mit der Schulleitung geschlossen. GGf. kann das Mittagessen noch im Klassenraum eingenommen werden.";
+		document.getElementById("actionextra").innerHTML = "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine wird in Absprache mit der Schulleitung geschlossen. Ggf. kann das Mittagessen noch im Klassenraum eingenommen werden.";
 	} else if (aqi >= 350) {
 		document.getElementById("colordesc").innerHTML = "Gefährlich (AQI ab 400)";
-		document.getElementById("action").innerHTML = "Schulfrei.*";
+		document.getElementById("action").innerHTML = "Schulfrei*";
 		document.getElementById("action").style.textAlign = "center";
 		document.getElementById("action").style.paddingLeft = "0px";
-		document.getElementById("actionextra").innerHTML = "* Schulfrei, wenn der Durchschnittswert von 5:00 Uhr bis 7:00 Uhr > 350 ist. Entscheidung und Bekanntgabe durch die Schulleitung um 07:15 Uhr.";
+		document.getElementById("actionextra").innerHTML = "* Schulfrei, wenn der Durchschnittswert von 5:00 Uhr bis 7:00 Uhr > 350 ist. Entscheidung und Bekanntgabe durch die Schulleitung und Athletic Director um 07:15 Uhr.";
 	}
 }
 

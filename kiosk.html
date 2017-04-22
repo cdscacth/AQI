@@ -40,7 +40,7 @@
 					document.getElementById("AQItr").style.color = "black";
 					document.getElementById("aPinat").style.color = "black";
 					document.getElementById("time").style.color = "black";
-					document.getElementById("action").innerHTML = "<br><br>Keine Einschränkungen.";
+					document.getElementById("action").innerHTML = "<br><br>Keine Einschränkungen";
 					document.getElementById("action").style.fontSize = "250%";
 					document.getElementById("action").style.textAlign = "center";
 				} else if (aqi < 100) {
@@ -48,7 +48,7 @@
 					document.getElementById("AQItr").style.color = "black";
 					document.getElementById("aPinat").style.color = "black";
 					document.getElementById("time").style.color = "black";
-					document.getElementById("action").innerHTML = "<br><br>Keine Einschränkungen.";
+					document.getElementById("action").innerHTML = "<br><br>Keine Einschränkungen";
 					document.getElementById("action").style.fontSize = "250%";
 					document.getElementById("action").style.textAlign = "center";
 				} else if (aqi < 150) {
@@ -56,7 +56,7 @@
 					document.getElementById("AQItr").style.color = "black";
 					document.getElementById("aPinat").style.color = "black";
 					document.getElementById("time").style.color = "black";
-					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Sportunterricht / AGs finden nur mit geringen Belastungen statt!</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt!</li>";
+					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Sportunterricht & AGs finden nur mit geringen Belastungen statt.</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt.</li>";
 					document.getElementById("action").style.fontSize = "200%";
 					document.getElementById("action").style.textAlign = "left";
 				} else if (aqi < 200) {
@@ -64,7 +64,7 @@
 					document.getElementById("AQItr").style.color = "black";
 					document.getElementById("aPinat").style.color = "black";
 					document.getElementById("time").style.color = "black";
-					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Die Sport AGs entfallen*!</li>";
+					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.*</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Die Sport AGs entfallen.**</li>";
 					document.getElementById("action").style.fontSize = "175%";
 					document.getElementById("action").style.textAlign = "left";
 				} else if (aqi < 300) {
@@ -72,7 +72,7 @@
 					document.getElementById("AQItr").style.color = "white";
 					document.getElementById("aPinat").style.color = "white";
 					document.getElementById("time").style.color = "white";
-					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Die Sport AGs entfallen!</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Schulschluss nach dem Mittagessen.*</li>";
+					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Schulschluss nach dem Mittagessen.*</li>";
 					document.getElementById("action").style.fontSize = "150%";
 					document.getElementById("action").style.textAlign = "left";
 				} else if (aqi < 350) {
@@ -80,7 +80,7 @@
 					document.getElementById("AQItr").style.color = "white";
 					document.getElementById("aPinat").style.color = "white";
 					document.getElementById("time").style.color = "white";
-					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich in geschlossenen Räumen auf.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Sportunterricht findet im Klassenraum statt!</li><li>Schutzmasken werden zur Verfügung gestellt und nach Möglichkeit getragen.</li><li>Schulschluss zum Mittagessen.*</li>";
+					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich in geschlossenen Räumen auf.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden zur Verfügung gestellt und nach Möglichkeit getragen.</li><li>Schulschluss zum Mittagessen.*</li>";
 					document.getElementById("action").style.fontSize = "150%";
 					document.getElementById("action").style.textAlign = "left";
 				} else if (aqi >= 350) {
@@ -89,7 +89,7 @@
 					document.getElementById("aPinat").style.color = "white";
 					document.getElementById("aPinat").style.color = "white";
 					document.getElementById("time").style.color = "white";
-					document.getElementById("action").innerHTML = "<br><br>Schulfrei.";
+					document.getElementById("action").innerHTML = "<br><br>Schulfrei*";
 					document.getElementById("action").style.fontSize = "250%";
 					document.getElementById("action").style.textAlign = "center";
 				}
