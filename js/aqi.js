@@ -176,32 +176,56 @@ function aqiavg() {
 	}
 
 	//PM2.5
-	var sumaqi25 = 0;
-	for (var i = 0; i < arrayAQI25.length; i++) {
-		sumaqi25 += arrayAQI25[i];
+	if (CDSCaqi25 != "Kein PM2.5-Wert") {
+		var sumaqi25 = 0;
+		for (var i = 0; i < arrayAQI25.length; i++) {
+			sumaqi25 += arrayAQI25[i];
+		}
+		var aqiavg25 = sumaqi25 / arrayAQI25.length;
+
+		var aqiavg25CDSC = (aqiavg25 + parseFloat(CDSCaqi25)) / 2;
+		console.log(aqiavg25CDSC);
+
+		document.getElementById("AQIavg25").innerHTML = aqiavg25CDSC.toFixed(2);
+
+		setColor(aqiavg25CDSC, "AQI25tr");
+	} else {
+		var sumaqi25 = 0;
+		for (var i = 0; i < arrayAQI25.length; i++) {
+			sumaqi25 += arrayAQI25[i];
+		}
+		var aqiavg25 = sumaqi25 / arrayAQI25.length;
+
+		document.getElementById("AQIavg25").innerHTML = aqiavg25.toFixed(2);
+
+		setColor(aqiavg25, "AQI25tr");
 	}
-	var aqiavg25 = sumaqi25 / arrayAQI25.length;
-
-	var aqiavg25CDSC = (aqiavg25 + parseFloat(CDSCaqi25)) / 2;
-	console.log(aqiavg25CDSC);
-
-	document.getElementById("AQIavg25").innerHTML = aqiavg25CDSC.toFixed(2);
-
-	setColor(aqiavg25CDSC, "AQI25tr");
 
 	//PM10
-	var sumaqi10 = 0;
-	for (var i = 0; i < arrayAQI10.length; i++) {
-		sumaqi10 += arrayAQI10[i];
+	if (CDSCaqi10 != "Kein PM10-Wert") {
+		var sumaqi10 = 0;
+		for (var i = 0; i < arrayAQI10.length; i++) {
+			sumaqi10 += arrayAQI10[i];
+		}
+		var aqiavg10 = sumaqi10 / arrayAQI10.length;
+
+		var aqiavg10CDSC = (aqiavg10 + parseFloat(CDSCaqi10)) / 2;
+		console.log(aqiavg10CDSC);
+
+		document.getElementById("AQIavg10").innerHTML = aqiavg10CDSC.toFixed(2);
+
+		setColor(aqiavg10CDSC, "AQI10tr");
+	} else {
+		var sumaqi10 = 0;
+		for (var i = 0; i < arrayAQI10.length; i++) {
+			sumaqi10 += arrayAQI10[i];
+		}
+		var aqiavg10 = sumaqi10 / arrayAQI10.length;
+
+		document.getElementById("AQIavg10").innerHTML = aqiavg10.toFixed(2);
+
+		setColor(aqiavg10, "AQI10tr");
 	}
-	var aqiavg10 = sumaqi10 / arrayAQI10.length;
-
-	var aqiavg10CDSC = (aqiavg10 + parseFloat(CDSCaqi10)) / 2;
-	console.log(aqiavg10CDSC);
-
-	document.getElementById("AQIavg10").innerHTML = aqiavg10CDSC.toFixed(2);
-
-	setColor(aqiavg10CDSC, "AQI10tr");
 }
 
 function compareaqi() {
@@ -210,7 +234,7 @@ function compareaqi() {
 
 	var aqi = Math.max(aqiavg10, aqiavg25);
 	console.log(aqi);
-	if (isNaN(aqi)) {
+	if (isNaN(aqi) || aqi == 0) {
 		document.getElementById("AQI").innerHTML = "Offline!";
 	} else {
 		document.getElementById("AQI").innerHTML = aqi.toFixed(2);
