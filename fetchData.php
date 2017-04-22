@@ -52,42 +52,43 @@
         $_36pm10 = "-";
     }
 
-    //GIS
-    $resultgis = file_get_contents("http://aq.ajosoft.com/getdata.php?StationID=2052&days=1", false);
-    $GISarray = explode(", ", $resultgis);
-    $GISzeit = substr($GISarray[8], 5);
-    if (count($GISarray) > 9) {
-    	$GISpm10 = $GISarray[9];
-	    $GISaqi10 = $GISarray[10];
-	    $GISpm25 = $GISarray[11];
-	    $GISaqi25 = $GISarray[12];
+    //CDSC
+    $resultcdsc = file_get_contents("http://aq.ajosoft.com/getdata.php?StationID=2053&days=1", NULL, NULL, 83, 47);
+    $CDSCarray = explode(", ", $resultcdsc);
+    if (count($CDSCarray) > 1) {
+        $CDSCzeit = $CDSCarray[0];
+        $CDSCpm10 = $CDSCarray[1];
+        $CDSCaqi10 = $CDSCarray[2];
+        $CDSCpm25 = $CDSCarray[3];
+        $CDSCaqi25 = intval($CDSCarray[4]);
     } else {
+        $CDSCzeit = "-";
+        $CDSCpm10 = "-";
+        $CDSCaqi10 = "-";
+        $CDSCpm25 = "-";
+        $CDSCaqi25 = "-";
+    }
+
+    //GIS
+    $resultgis = file_get_contents("http://aq.ajosoft.com/getdata.php?StationID=2052&days=1", NULL, NULL, 83, 47);
+    $GISarray = explode(", ", $resultgis);
+    if (count($GISarray) > 1) {
+        $GISzeit = $GISarray[0];
+    	$GISpm10 = $GISarray[1];
+	    $GISaqi10 = $GISarray[2];
+	    $GISpm25 = $GISarray[3];
+        $GISaqi25 = intval($GISarray[4]);
+    } else {
+        $GISzeit = "-";
     	$GISpm10 = "-";
 	    $GISaqi10 = "-";
 	    $GISpm25 = "-";
 	    $GISaqi25 = "-";
     }
-
-	//CDSC
-    $resultcdsc = file_get_contents("http://aq.ajosoft.com/getdata.php?StationID=2053&days=1", false);
-    $CDSCarray = explode(", ", $resultcdsc);
-    $CDSCzeit = substr($CDSCarray[8], 5);
-    if (count($CDSCarray) > 9) {
-    	$CDSCpm10 = $CDSCarray[9];
-	    $CDSCaqi10 = $CDSCarray[10];
-	    $CDSCpm25 = $CDSCarray[11];
-	    $CDSCaqi25 = $CDSCarray[12];
-    } else {
-    	$CDSCzeit = "-";
-    	$CDSCpm10 = "-";
-	    $CDSCaqi10 = "-";
-	    $CDSCpm25 = "-";
-	    $CDSCaqi25 = "-";
-    }
     
     // _36zeit, _36pm10, _36pm25
-    // GISzeit, GISpm10, GISaqi10, GISpm25, GISaqi25
     // CDSCzeit, CDSCpm10, CDSCaqi10, CDSCpm25, CDSCaqi25
+    // GISzeit, GISpm10, GISaqi10, GISpm25, GISaqi25
 
 
     $send = $_36zeit . ";" . $_36pm25 . ";" . $_36pm10 . ";" . $CDSCzeit . ";" . $CDSCpm25 . ";" . $CDSCaqi25. ";" . $CDSCpm10 . ";" . $CDSCaqi10 . ";" . $GISzeit . ";" . $GISpm25 . ";" . $GISaqi25 . ";" . $GISpm10 . ";" . $GISaqi10;
