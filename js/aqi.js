@@ -8,7 +8,7 @@ async function getData() {
 	XML.send();
 }
 
-async function showValue(callback) {
+async function showValue() {
 	if (XML.readyState == 4) {
 		var data;
 		data = XML.responseText;
@@ -30,7 +30,6 @@ async function showValue(callback) {
 			_36time = _36Datum.getTime();
 			if (stunde >= 10) {
 				var _36zeit = "Stündlicher Wert vom <b>" + zeitarr[2] + "." + zeitarr[1] + "." + zeitarr[0] + "</b> um <b>" + stunde + ":" + zeitarr[4] + ":" + zeitarr[5] + "</b>";
-
 			} else {
 				var _36zeit = "Stündlicher Wert vom <b>" + zeitarr[2] + "." + zeitarr[1] + "." + zeitarr[0] + "</b> um <b> 0" + stunde + ":" + zeitarr[4] + ":" + zeitarr[5] + "</b>";
 			}
@@ -193,8 +192,6 @@ async function aqiavg() {
 		}
 
 		await localforage.setItem("AQIavg25", aqiavg25CDSC.toFixed(2));
-
-		setColor(aqiavg25CDSC, "AQI25tr");
 	} else {
 		var sumaqi25 = 0;
 		for (var i = 0; i < arrayAQI25.length; i++) {
@@ -203,8 +200,6 @@ async function aqiavg() {
 		var aqiavg25 = sumaqi25 / arrayAQI25.length;
 
 		await localforage.setItem("AQIavg25", aqiavg25.toFixed(2));
-
-		setColor(aqiavg25, "AQI25tr");
 	}
 
 	//PM10
@@ -221,8 +216,6 @@ async function aqiavg() {
 			var aqiavg10CDSC = (aqiavg10 + parseFloat(CDSCaqi10)) / 2;
 		}
 		await localforage.setItem("AQIavg10", aqiavg10CDSC.toFixed(2));
-
-		setColor(aqiavg10CDSC, "AQI10tr");
 	} else {
 		var sumaqi10 = 0;
 		for (var i = 0; i < arrayAQI10.length; i++) {
@@ -231,8 +224,6 @@ async function aqiavg() {
 		var aqiavg10 = sumaqi10 / arrayAQI10.length;
 
 		await localforage.setItem("AQIavg10", aqiavg10.toFixed(2));
-
-		setColor(aqiavg10, "AQI10tr");
 	}
 }
 
@@ -245,66 +236,40 @@ async function compareaqi() {
 	if (isNaN (aqi) || aqi == 0) {
 		await localforage.setItem("AQI", "Offline!");
 		await localforage.setItem("AQIkiosk", "Offline!");
-		await localforage.setItem(AQItd + ".style.backgroundColor", "#ffffff");
-		await localforage.setItem(AQItd + ".style.color", "black");
 	} else {
 		await localforage.setItem("AQI", aqi.toFixed(2));
 		await localforage.setItem("AQIkiosk", aqi.toFixed(0));
 	}
-	setColor(aqi, "AQItr");
-	setColor(aqi, "info-header");
-	setColor(aqi, "info-footer");
 
 	setIcon();
 
 	if (aqi < 50) {
 		await localforage.setItem("colordesc", "Gut (AQI bis 49)");
 		await localforage.setItem("action", "Keine Einschränkungen");
-		await localforage.setItem("action.style.textAlign", "center");
-		await localforage.setItem("action.style.paddingLeft", "0px");
-		await localforage.setItem("action.style.fontSize", "250%");
 		await localforage.setItem("actionextra", "-");
 	} else if (aqi < 100) {
 		await localforage.setItem("colordesc", "Moderat (AQI 50 - 99)");
 		await localforage.setItem("action", "Keine Einschränkungen");
-		await localforage.setItem("action.style.textAlign", "center");
-		await localforage.setItem("action.style.paddingLeft", "0px");
-		await localforage.setItem("action.style.fontSize", "250%");
 		await localforage.setItem("actionextra", "-");
 	} else if (aqi < 150) {
 		await localforage.setItem("colordesc", "Ungesund für sensible Gruppen (AQI 100 - 149)");
 		await localforage.setItem("action", "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Sportunterricht & AGs finden nur mit geringen Belastungen statt.</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt.</li>");
-		await localforage.setItem("action.style.textAlign", "left");
-		await localforage.setItem("action.style.paddingLeft", "25px");
-		await localforage.setItem("action.style.fontSize", "200%");
 		await localforage.setItem("actionextra", "-");
 	} else if (aqi < 200) {
 		await localforage.setItem("colordesc", "Ungesund (AQI 150 - 199)");
 		await localforage.setItem("action", "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.*</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Die Sport AGs entfallen.**</li>");
-		await localforage.setItem("action.style.textAlign", "left");
-		await localforage.setItem("action.style.paddingLeft", "25px");
-		await localforage.setItem("action.style.fontSize", "175%");
 		await localforage.setItem("actionextra", "* Die Entscheidung, ob die Andacht stattfindet oder die Klassenlehrer mit ihren Klassen in den Klassenraum gehen, wird in der Dienstbesprechung getroffen. Als Richtwert gilt ein AQI von 175.<br>** Die Entscheidung, ob die AGs stattfinden oder entfallen, wird um 13:15 Uhr von Schulleitung und Athletic Director getroffen und umgehend veröffentlicht. Gleiches gilt für CMAC Wettbewerbe.");
 	} else if (aqi < 300) {
 		await localforage.setItem("colordesc", "Sehr Ungesund (AQI 200 - 299)");
 		await localforage.setItem("action", "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Schulschluss nach dem Mittagessen.*</li>");
-		await localforage.setItem("action.style.textAlign", "left");
-		await localforage.setItem("action.style.paddingLeft", "25px");
-		await localforage.setItem("action.style.fontSize", "150%");
 		await localforage.setItem("actionextra", "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine bleibt in Absprache mit der Schulleitung geöffnet. Das Mittagessen kann im Klassenraum eingenommen werden.");
 	} else if (aqi < 350) {
 		await localforage.setItem("colordesc", "Gesundheitsschädigend (AQI 300 - 399)");
 		await localforage.setItem("action", "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich in geschlossenen Räumen auf.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden zur Verfügung gestellt und nach Möglichkeit getragen.</li><li>Schulschluss zum Mittagessen.*</li>");
-		await localforage.setItem("action.style.textAlign", "left");
-		await localforage.setItem("action.style.paddingLeft", "25px");
-		await localforage.setItem("action.style.fontSize", "150%");
 		await localforage.setItem("actionextra", "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine wird in Absprache mit der Schulleitung geschlossen. Ggf. kann das Mittagessen noch im Klassenraum eingenommen werden.");
 	} else if (aqi >= 350) {
 		await localforage.setItem("colordesc", "Gefährlich (AQI ab 400)");
 		await localforage.setItem("action", "Schulfrei*");
-		await localforage.setItem("action.style.textAlign", "center");
-		await localforage.setItem("action.style.paddingLeft", "0px");
-		await localforage.setItem("action.style.fontSize", "250%");
 		await localforage.setItem("actionextra", "* Schulfrei, wenn der Durchschnittswert von 5:00 Uhr bis 7:00 Uhr > 350 ist. Entscheidung und Bekanntgabe durch die Schulleitung und Athletic Director um 07:15 Uhr.");
 	}
 }
@@ -347,14 +312,10 @@ async function calcaqi25(pm25div, AQI25div, AQI25td) {
 			var aqipm25 = ((aqi8 - aqi7) / (pm8 - pm7)) * (pm25 - pm7) + aqi7;
 		}
 		console.log(aqipm25);
-		await localforage.setItem(AQI25div, aqipm25.toFixed(2))
-
-		setColor(aqipm25, AQI25td);
+		await localforage.setItem(AQI25div, aqipm25.toFixed(2));
 
 	} else {
 		await localforage.setItem(AQI25div, "Kein PM2.5-Wert");
-		await localforage.setItem(AQI25td + ".style.backgroundColor", "white");
-		await localforage.setItem(AQI25td + ".style.Color", "black");
 	}
 }
 
@@ -398,37 +359,68 @@ async function calcaqi10(pm10div, AQI10div, AQI10td) {
 		console.log(aqipm10);
 		await localforage.setItem(AQI10div, aqipm10.toFixed(2));
 
-		setColor(aqipm10, AQI10td);
-
 	} else {
 		await localforage.setItem(AQI10div, "Kein PM10-Wert");
-		await localforage.setItem(AQI10td + ".style.backgroundColor", "white");
-		await localforage.setItem(AQI10td + ".style.Color", "black");
 	}
 }
 
-async function setColor(aqivalue, AQItd) {
+function setColor(aqivalue, AQItd) {
 	if (aqivalue < 50) {
-		await localforage.setItem(AQItd + ".style.backgroundColor", "#00ff00");
-		await localforage.setItem(AQItd + ".style.color", "black");
+		document.getElementById(AQItd).style.backgroundColor = "#00ff00";
+		document.getElementById(AQItd).style.color = "black";
 	} else if (aqivalue < 100) {
-		await localforage.setItem(AQItd + ".style.backgroundColor", "#ffff00");
-		await localforage.setItem(AQItd + ".style.color", "black");
+		document.getElementById(AQItd).style.backgroundColor = "#ffff00";
+		document.getElementById(AQItd).style.color = "black";
 	} else if (aqivalue < 150) {
-		await localforage.setItem(AQItd + ".style.backgroundColor", "#ff9900");
-		await localforage.setItem(AQItd + ".style.color", "black");
+		document.getElementById(AQItd).style.backgroundColor = "#ff9900";
+		document.getElementById(AQItd).style.color = "black";
 	} else if (aqivalue < 200) {
-		await localforage.setItem(AQItd + ".style.backgroundColor", "#ff0000");
-		await localforage.setItem(AQItd + ".style.color", "black");
+		document.getElementById(AQItd).style.backgroundColor = "#ff0000";
+		document.getElementById(AQItd).style.color = "black";
 	} else if (aqivalue < 300) {
-		await localforage.setItem(AQItd + ".style.backgroundColor", "#cc0000");
-		await localforage.setItem(AQItd + ".style.color", "white");
-	} else if (aqivalue < 400) {
-		await localforage.setItem(AQItd + ".style.backgroundColor", "#674ea7");
-		await localforage.setItem(AQItd + ".style.color", "white");
-	} else if (aqivalue >= 400) {
-		await localforage.setItem(AQItd + ".style.backgroundColor", "#000000");
-		await localforage.setItem(AQItd + ".style.color", "white");
+		document.getElementById(AQItd).style.backgroundColor = "#cc0000";
+		document.getElementById(AQItd).style.color = "white";
+	} else if (aqivalue < 350) {
+		document.getElementById(AQItd).style.backgroundColor = "#674ea7";
+		document.getElementById(AQItd).style.color = "white";
+	} else if (aqivalue >= 350) {
+		document.getElementById(AQItd).style.backgroundColor = "#000000";
+		document.getElementById(AQItd).style.color = "white";
+	} else if (aqivalue == "Kein PM10-Wert" || aqivalue == "Kein PM2.5-Wert") {
+		document.getElementById(AQItd).style.backgroundColor = "#ffffff";
+		document.getElementById(AQItd).style.color = "black";
+	}
+}
+
+function setStyle(aqivalue) {
+	if (aqivalue < 100) {
+		document.getElementById("action").style.textAlign = "center";
+		document.getElementById("action").style.paddingLeft = "0px";
+	} else if (aqivalue < 350) {
+		document.getElementById("action").style.textAlign = "left";
+		document.getElementById("action").style.paddingLeft = "25px";
+	} else if (aqivalue >= 350) {
+		document.getElementById("action").style.textAlign = "center";
+		document.getElementById("action").style.paddingLeft = "0px";
+	} else if (aqivalue == "Kein PM10-Wert" || aqivalue == "Kein PM2.5-Wert") {
+		document.getElementById("action").style.textAlign = "center";
+		document.getElementById("action").style.paddingLeft = "0px";
+	}
+}
+
+function setFontSize(aqivalue) {
+	if (aqivalue < 100) {
+		document.getElementById("action").style.fontSize = "250%";
+	} else if (aqivalue < 150) {
+		document.getElementById("action").style.fontSize = "200%";
+	} else if (aqivalue < 200) {
+		document.getElementById("action").style.fontSize = "175%";
+	} else if (aqivalue < 350) {
+		document.getElementById("action").style.fontSize = "150%";
+	} else if (aqivalue >= 350) {
+		document.getElementById("action").style.fontSize = "200%";
+	} else if (aqivalue == "Kein PM10-Wert" || aqivalue == "Kein PM2.5-Wert") {
+		document.getElementById("action").style.fontSize = "200%";
 	}
 }
 

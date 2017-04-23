@@ -16,11 +16,11 @@
 		<link rel="prefetch" href="images/cc0000.png" />
 		<link rel="prefetch" href="images/674ea7.png" />
 		<link rel="prefetch" href="images/000000.png" />
-		<link rel="stylesheet" type="text/css" href="style.css?v=1.2" />
+		<link rel="stylesheet" type="text/css" href="style.css?v=1.3" />
 		<link id="ico" rel="shortcut icon" href="images/icon.png" />
 		<script src="js/Chart.bundle.min.js"></script>
 		<script src="js/localforage.min.js"></script>
-		<script src="js/aqi.js"></script>
+		<script src="js/aqi.js?v=1.3"></script>
 		<script type="text/javascript">
 			async function displayData() {
 				document.getElementById("36zeit").innerHTML = await localforage.getItem("36zeit");
@@ -28,47 +28,39 @@
 				document.getElementById("36pm10").innerHTML = await localforage.getItem("36pm10");
 				document.getElementById("36aqi25").innerHTML = await localforage.getItem("36aqi25");
 				document.getElementById("36aqi10").innerHTML = await localforage.getItem("36aqi10");
-				document.getElementById("AQI2536").style.backgroundColor = await localforage.getItem("AQI2536.style.backgroundColor");
-				document.getElementById("AQI1036").style.backgroundColor = await localforage.getItem("AQI1036.style.backgroundColor");
-				document.getElementById("AQI2536").style.color = await localforage.getItem("AQI2536.style.color");
-				document.getElementById("AQI1036").style.color = await localforage.getItem("AQI1036.style.color");
+				setColor(await localforage.getItem("36aqi25"), "AQI2536");
+				setColor(await localforage.getItem("36aqi10"), "AQI1036");
 
 				document.getElementById("CDSCzeit").innerHTML = await localforage.getItem("CDSCzeit");
 				document.getElementById("CDSCpm25").innerHTML = await localforage.getItem("CDSCpm25");
 				document.getElementById("CDSCpm10").innerHTML = await localforage.getItem("CDSCpm10");
 				document.getElementById("CDSCaqi25").innerHTML = await localforage.getItem("CDSCaqi25");
 				document.getElementById("CDSCaqi10").innerHTML = await localforage.getItem("CDSCaqi10");
-				document.getElementById("AQI25CDSC").style.backgroundColor = await localforage.getItem("AQI25CDSC.style.backgroundColor");
-				document.getElementById("AQI10CDSC").style.backgroundColor = await localforage.getItem("AQI10CDSC.style.backgroundColor");
-				document.getElementById("AQI25CDSC").style.color = await localforage.getItem("AQI25CDSC.style.color");
-				document.getElementById("AQI10CDSC").style.color = await localforage.getItem("AQI10CDSC.style.color");
+				setColor(await localforage.getItem("CDSCaqi25"), "AQI25CDSC");
+				setColor(await localforage.getItem("CDSCaqi10"), "AQI10CDSC");
 
 				document.getElementById("GISzeit").innerHTML = await localforage.getItem("GISzeit");
 				document.getElementById("GISpm25").innerHTML = await localforage.getItem("GISpm25");
 				document.getElementById("GISpm10").innerHTML = await localforage.getItem("GISpm10");
 				document.getElementById("GISaqi25").innerHTML = await localforage.getItem("GISaqi25");
 				document.getElementById("GISaqi10").innerHTML = await localforage.getItem("GISaqi10");
-				document.getElementById("AQI25GIS").style.backgroundColor = await localforage.getItem("AQI25GIS.style.backgroundColor");
-				document.getElementById("AQI10GIS").style.backgroundColor = await localforage.getItem("AQI10GIS.style.backgroundColor");
-				document.getElementById("AQI25GIS").style.color = await localforage.getItem("AQI25GIS.style.color");
-				document.getElementById("AQI10GIS").style.color = await localforage.getItem("AQI10GIS.style.color");
+				setColor(await localforage.getItem("GISaqi25"), "AQI25GIS");
+				setColor(await localforage.getItem("GISaqi10"), "AQI10GIS");
 
 				document.getElementById("AQIavg25").innerHTML = await localforage.getItem("AQIavg25");
 				document.getElementById("AQIavg10").innerHTML = await localforage.getItem("AQIavg10");
+				setColor(await localforage.getItem("AQIavg25"), "AQI25tr");
+				setColor(await localforage.getItem("AQIavg10"), "AQI10tr");
 
 				document.getElementById("AQI").innerHTML = await localforage.getItem("AQI");
-				document.getElementById("AQItr").style.backgroundColor = await localforage.getItem("AQItr.style.backgroundColor");
-				document.getElementById("AQItr").style.color = await localforage.getItem("AQItr.style.color");
+				setColor(await localforage.getItem("AQI"), "AQItr");
 
 				document.getElementById("colordesc").innerHTML = await localforage.getItem("colordesc");
 				document.getElementById("action").innerHTML = await localforage.getItem("action");
-				document.getElementById("action").style.textAlign = await localforage.getItem("action.style.textAlign");
-				document.getElementById("action").style.paddingLeft = await localforage.getItem("action.style.paddingLeft");
 				document.getElementById("actionextra").innerHTML = await localforage.getItem("actionextra");
-				document.getElementById("info-footer").style.backgroundColor = await localforage.getItem("info-footer.style.backgroundColor");
-				document.getElementById("info-footer").style.color = await localforage.getItem("info-footer.style.color");
-				document.getElementById("info-header").style.backgroundColor = await localforage.getItem("info-header.style.backgroundColor");
-				document.getElementById("info-header").style.color = await localforage.getItem("info-header.style.color");
+				setStyle(await localforage.getItem("AQI"));
+				setColor(await localforage.getItem("AQI"), "info-footer");
+				setColor(await localforage.getItem("AQI"), "info-footer");
 			}
 
 			window.onload = chart();
