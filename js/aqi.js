@@ -1,4 +1,5 @@
 var XML = new XMLHttpRequest();
+var firstRequest = 1;
 
 async function getData() {
 	var url = "fetchData.php";
@@ -17,12 +18,11 @@ async function showValue() {
 		console.log(dataSplitArray);
 
 		var _36pm25 = dataSplitArray[1];
-		console.log(_36pm25);
 		var _36pm10 = dataSplitArray[2];
 		var zeitstr = dataSplitArray[0];
 
 		if (zeitstr === "-") {
-			var _36zeit = "aqmthai.com ist nicht verfügbar!";
+			var _36zeit = "36t-Station ist offline!";
 		} else {
 			var zeitarr = zeitstr.split(",");
 			var stunde = parseFloat(zeitarr[3]) + 1;
@@ -41,18 +41,23 @@ async function showValue() {
 			_36pm10 = parseFloat(_36pm10).toFixed(2);
 		}
 
+		if (firstRequest == 0) {
+			if (_36pm25 == "-" || _36pm10 == "-") {
+				_36zeit = await localforage.getItem("36zeit");
+				_36pm25 = await localforage.getItem("36pm25");
+				_36pm10 = await localforage.getItem("36pm10");
+			}
+		}
+
 		await localforage.setItem("36zeit", _36zeit);
 		await localforage.setItem("36pm25", _36pm25);
 		await localforage.setItem("36pm10", _36pm10);
 
 		//CDSC-Werte
 		var CDSCpm25 = dataSplitArray[4];
-		console.log(CDSCpm25);
-
 		var CDSCpm10 = dataSplitArray[6];
-		console.log(CDSCpm10);
-
 		var CDSCzeitstr = dataSplitArray[3];
+
 		var CDSCDatum = new Date(CDSCzeitstr);
 		CDSCDatum.setHours(CDSCDatum.getHours() + 7);
 		if (CDSCzeitstr != "-") {
@@ -69,19 +74,21 @@ async function showValue() {
 			CDSCpm10 = parseFloat(CDSCpm10).toFixed(2);
 		}
 
+		if (firstRequest == 0) {
+			if (CDSCpm25 == "-" || CDSCpm10 == "-") {
+				CDSCzeit = await localforage.getItem("CDSCzeit");
+				CDSCpm25 = await localforage.getItem("CDSCpm25");
+				CDSCpm10 = await localforage.getItem("CDSCpm10");
+			}
+		}
+
 		await localforage.setItem("CDSCzeit", CDSCzeit);
 		await localforage.setItem("CDSCpm25", CDSCpm25);
 		await localforage.setItem("CDSCpm10", CDSCpm10);
 
-		
-
 		//GIS-Werte
 		var GISpm25 = dataSplitArray[9];
-		console.log(GISpm25);
-
 		var GISpm10 = dataSplitArray[11];
-		console.log(GISpm10);
-
 		var GISzeitstr = dataSplitArray[8];
 
 		var GISDatum = new Date(GISzeitstr);
@@ -99,9 +106,19 @@ async function showValue() {
 			GISpm10 = parseFloat(GISpm10).toFixed(2);
 		}
 
+		if (firstRequest == 0) {
+			if (GISpm25 == "-" || GISpm10 == "-") {
+				GISzeit = await localforage.getItem("GISzeit");
+				GISpm25 = await localforage.getItem("GISpm25");
+				GISpm10 = await localforage.getItem("GISpm10");
+			}
+		}
+
 		await localforage.setItem("GISzeit", GISzeit);
 		await localforage.setItem("GISpm25", GISpm25);
 		await localforage.setItem("GISpm10", GISpm10);
+
+		firstRequest = 0;
 
 		await aqipm25();
 		await aqipm10();
@@ -285,7 +302,6 @@ async function calcaqi25(pm25div, AQI25div, AQI25td) {
 		}
 		console.log(aqipm25);
 		await localforage.setItem(AQI25div, aqipm25.toFixed(2));
-
 	} else {
 		await localforage.setItem(AQI25div, "Kein PM2.5-Wert");
 	}
