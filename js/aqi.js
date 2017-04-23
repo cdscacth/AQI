@@ -245,6 +245,8 @@ async function compareaqi() {
 	if (isNaN (aqi) || aqi == 0) {
 		await localforage.setItem("AQI", "Offline!");
 		await localforage.setItem("AQIkiosk", "Offline!");
+		await localforage.setItem(AQItd + ".style.backgroundColor", "#ffffff");
+		await localforage.setItem(AQItd + ".style.color", "black");
 	} else {
 		await localforage.setItem("AQI", aqi.toFixed(2));
 		await localforage.setItem("AQIkiosk", aqi.toFixed(0));
