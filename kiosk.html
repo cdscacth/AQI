@@ -18,16 +18,16 @@
 		<link rel="stylesheet" type="text/css" href="style.css?v=1.3" />
 		<link id="ico" rel="shortcut icon" href="images/icon.png" />
 		<script src="js/localforage.min.js"></script>
-		<script src="js/aqi.js?v=1.3"></script>
+		<script src="js/aqi.js?v=1.4"></script>
 		<script type="text/javascript">
 			async function displayData() {
 				document.getElementById("time").innerHTML = await localforage.getItem("time");
 
 				document.getElementById("AQIkiosk").innerHTML = await localforage.getItem("AQIkiosk");
 				setColor(await localforage.getItem("AQI"), "AQItr");
-				setColor(await localforage.getItem("AQI"), "body");
+				setFontColor(await localforage.getItem("AQI"));
 
-				document.getElementById("action").innerHTML = await localforage.getItem("action");
+				setAction(await localforage.getItem("AQI"));
 				setStyle(await localforage.getItem("AQI"));
 				setFontSize(await localforage.getItem("AQI"));
 			}
@@ -55,14 +55,14 @@
 			<table style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100%; width: 100%">
 				<tr>
 					<td style="width: 50%;">
-						<div id="time" style="color: black; text-align: center; font-size: 125%; padding-bottom: 95%">Laden...</div>
+						<div id="time" style="text-align: center; font-size: 125%; padding-bottom: 95%">Laden...</div>
 					</td>
 					<td style="width: 50%;">
 					</td>
 				</tr>
 
 			</table>
-			<div id="aPinat" style="position: absolute; bottom: 10px; left: 25px; color: black; font-size: 200%"><i>&#8211; aPinat</i></div>
+			<div id="aPinat" style="color: black; position: absolute; bottom: 10px; left: 25px; font-size: 200%"><i>&#8211; aPinat</i></div>
 		</div>
 	</body>
 </html>

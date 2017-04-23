@@ -20,7 +20,7 @@
 		<link id="ico" rel="shortcut icon" href="images/icon.png" />
 		<script src="js/Chart.bundle.min.js"></script>
 		<script src="js/localforage.min.js"></script>
-		<script src="js/aqi.js?v=1.3"></script>
+		<script src="js/aqi.js?v=1.4"></script>
 		<script type="text/javascript">
 			async function displayData() {
 				document.getElementById("36zeit").innerHTML = await localforage.getItem("36zeit");
@@ -58,13 +58,16 @@
 				document.getElementById("colordesc").innerHTML = await localforage.getItem("colordesc");
 				document.getElementById("action").innerHTML = await localforage.getItem("action");
 				document.getElementById("actionextra").innerHTML = await localforage.getItem("actionextra");
-				setStyle(await localforage.getItem("AQI"));
+				setAction(await localforage.getItem("AQI"), "main");
+				setColor(await localforage.getItem("AQI"), "info-header");
 				setColor(await localforage.getItem("AQI"), "info-footer");
-				setColor(await localforage.getItem("AQI"), "info-footer");
+				setStyle(await localforage.getItem("AQI"), "main");
+
+				setIcon(await localforage.getItem("AQI"));
 			}
 
-			window.onload = chart();
-			setInterval(chart, 60000);
+			//window.onload = chart();
+			//setInterval(chart, 60000);
 
 			localforage.clear();
 			getData();
@@ -124,7 +127,7 @@
 				</tr>
 			</table>
 			<br>
-			<canvas id="ChartCDSC" height="100"></canvas>
+			<canvas id="ChartCDSC" height="100" hidden="1"></canvas>
 			<br>
 			<div id="GISzeit">Laden...</div><br>
 			<table class="border">
