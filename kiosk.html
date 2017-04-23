@@ -18,95 +18,35 @@
 		<link rel="prefetch" href="images/000000.png" />
 		<link rel="stylesheet" type="text/css" href="style.css?v=1.2" />
 		<link id="ico" rel="shortcut icon" href="images/icon.png" />
+		<script src="js/localforage.min.js"></script>
 		<script src="js/aqi.js"></script>
 		<script type="text/javascript">
-			function compareaqi() {
-				var aqiavg10 = document.getElementById("AQIavg10").innerHTML;
-				var aqiavg25 = document.getElementById("AQIavg25").innerHTML;
+			async function displayData() {
+				document.getElementById("time").innerHTML = await localforage.getItem("time");
 
-				var aqi = Math.max(aqiavg10, aqiavg25);
-				console.log(aqi);
+				document.getElementById("AQIkiosk").innerHTML = await localforage.getItem("AQIkiosk");
+				document.getElementById("AQItr").style.backgroundColor = await localforage.getItem("AQItr.style.backgroundColor");
+				document.getElementById("body").style.color = await localforage.getItem("AQItr.style.color");
 
-				if (isNaN(aqi)) {
-					document.getElementById("AQI").innerHTML = "Offline!";
-				} else {
-					document.getElementById("AQI").innerHTML = aqi.toFixed(0);
-				}
-
-				setIcon();
-
-				if (aqi < 50) {
-					document.getElementById("AQItr").style.backgroundColor = "#00ff00";
-					document.getElementById("AQItr").style.color = "black";
-					document.getElementById("aPinat").style.color = "black";
-					document.getElementById("time").style.color = "black";
-					document.getElementById("action").innerHTML = "<br><br>Keine Einschränkungen";
-					document.getElementById("action").style.fontSize = "250%";
-					document.getElementById("action").style.textAlign = "center";
-				} else if (aqi < 100) {
-					document.getElementById("AQItr").style.backgroundColor = "#ffff00";
-					document.getElementById("AQItr").style.color = "black";
-					document.getElementById("aPinat").style.color = "black";
-					document.getElementById("time").style.color = "black";
-					document.getElementById("action").innerHTML = "<br><br>Keine Einschränkungen";
-					document.getElementById("action").style.fontSize = "250%";
-					document.getElementById("action").style.textAlign = "center";
-				} else if (aqi < 150) {
-					document.getElementById("AQItr").style.backgroundColor = "#ff9900";
-					document.getElementById("AQItr").style.color = "black";
-					document.getElementById("aPinat").style.color = "black";
-					document.getElementById("time").style.color = "black";
-					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Sportunterricht & AGs finden nur mit geringen Belastungen statt.</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt.</li>";
-					document.getElementById("action").style.fontSize = "200%";
-					document.getElementById("action").style.textAlign = "left";
-				} else if (aqi < 200) {
-					document.getElementById("AQItr").style.backgroundColor = "#ff0000";
-					document.getElementById("AQItr").style.color = "black";
-					document.getElementById("aPinat").style.color = "black";
-					document.getElementById("time").style.color = "black";
-					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.*</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Die Sport AGs entfallen.**</li>";
-					document.getElementById("action").style.fontSize = "175%";
-					document.getElementById("action").style.textAlign = "left";
-				} else if (aqi < 300) {
-					document.getElementById("AQItr").style.backgroundColor = "#cc0000";
-					document.getElementById("AQItr").style.color = "white";
-					document.getElementById("aPinat").style.color = "white";
-					document.getElementById("time").style.color = "white";
-					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Schulschluss nach dem Mittagessen.*</li>";
-					document.getElementById("action").style.fontSize = "150%";
-					document.getElementById("action").style.textAlign = "left";
-				} else if (aqi < 350) {
-					document.getElementById("AQItr").style.backgroundColor = "#674ea7";
-					document.getElementById("AQItr").style.color = "white";
-					document.getElementById("aPinat").style.color = "white";
-					document.getElementById("time").style.color = "white";
-					document.getElementById("action").innerHTML = "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich in geschlossenen Räumen auf.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden zur Verfügung gestellt und nach Möglichkeit getragen.</li><li>Schulschluss zum Mittagessen.*</li>";
-					document.getElementById("action").style.fontSize = "150%";
-					document.getElementById("action").style.textAlign = "left";
-				} else if (aqi >= 350) {
-					document.getElementById("AQItr").style.backgroundColor = "#000000";
-					document.getElementById("AQItr").style.color = "white";
-					document.getElementById("aPinat").style.color = "white";
-					document.getElementById("aPinat").style.color = "white";
-					document.getElementById("time").style.color = "white";
-					document.getElementById("action").innerHTML = "<br><br>Schulfrei*";
-					document.getElementById("action").style.fontSize = "250%";
-					document.getElementById("action").style.textAlign = "center";
-				}
+				document.getElementById("action").innerHTML = await localforage.getItem("action");
+				document.getElementById("action").style.textAlign = await localforage.getItem("action.style.textAlign");
+				document.getElementById("action").style.paddingLeft = await localforage.getItem("action.style.paddingLeft");
+				document.getElementById("action").style.fontSize = await localforage.getItem("action.style.fontSize");
 			}
 
+			localforage.clear();
 			getData();
 			setInterval(getData, 60000);
 		</script>
 	</head>
 
-	<body>
+	<body style="background: white;" id="body">
 		<div id="kiosk">
 			<table style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100%; width: 100%">
 				<tr id="AQItr" class="bg" style="height: 100%">
 					<td style="width: 50%; font-size: 750%">
 						<div class="text">AQI</div>
-						<div id="AQI">Laden...</div>
+						<div id="AQIkiosk">Laden...</div>
 					</td>
 					<td style="width: 50%">
 						<div class="text" style="font-size: 400%">Maßnahmen</div>
@@ -126,112 +66,6 @@
 			</table>
 			<div id="aPinat" style="position: absolute; bottom: 10px; left: 25px; color: black; font-size: 200%"><i>&#8211; aPinat</i></div>
 		</div>
-		<div id="main" style="display: none">
-			<h1>Aktueller AQI an der CDSC</h1>
-			<div id="CDSCzeit">Laden...</div><br>
-			<table class="border">
-				<tr>
-					<td class="bg" style="width: 50%;">
-						<div class="text">PM2.5 CDSC</div>
-						<div id="CDSCpm25">Laden...</div>
-					</td>
-					<td id="AQI25CDSC" class="bg">
-						<div class="text">AQI PM2.5 CDSC</div>
-						<div id="CDSCaqi25">Laden...</div>
-					</td>
-				</tr>
-				<tr>
-					<td class="bg">
-						<div class="text">PM10 CDSC</div>
-						<div id="CDSCpm10">Laden...</div>
-					</td>
-					<td id="AQI10CDSC" class="bg">
-						<div class="text">AQI PM10 CDSC</div>
-						<div id="CDSCaqi10">Laden...</div>
-					</td>
-				</tr>
-			</table>
-			<br>
-
-			<div id="GISzeit">Laden...</div><br>
-			<table class="border">
-				<tr>
-					<td class="bg" style="width: 50%;">
-						<div class="text">PM2.5 GIS</div>
-						<div id="GISpm25">Laden...</div>
-					</td>
-					<td id="AQI25GIS" class="bg">
-						<div class="text">AQI PM2.5 GIS</div>
-						<div id="GISaqi25">Laden...</div>
-					</td>
-				</tr>
-				<tr>
-					<td class="bg">
-						<div class="text">PM10 GIS</div>
-						<div id="GISpm10">Laden...</div>
-					</td>
-					<td id="AQI10GIS" class="bg">
-						<div class="text">AQI PM10 GIS</div>
-						<div id="GISaqi10">Laden...</div>
-					</td>
-				</tr>
-			</table>
-			<br>
-
-			<div id="36zeit">Laden...</div><br>
-			<table class="border">
-				<tr>
-					<td class="bg" style="width: 50%">
-						<div class="text">PM2.5 36t</div>
-						<div id="36pm25">Laden...</div>
-					</td>
-					<td id="AQI2536" class="bg">
-						<div class="text">AQI PM2.5 36t</div>
-						<div id="36aqi25">Laden...</div>
-					</td>
-				</tr>
-				<tr>
-					<td class="bg">
-						<div class="text">PM10 36t</div>
-						<div id="36pm10">Laden...</div>
-					</td>
-					<td id="AQI1036" class="bg">
-						<div class="text">AQI PM10 36t</div>
-						<div id="36aqi10">Laden...</div>
-					</td>
-				</tr>
-			</table>
-			<br>
-			<table class="border">
-				<tr id="AQI25tr" class="bg" style="display: none">
-					<td>
-						<div class="text">End-AQI (PM2.5)</div>
-						<div id="AQIavg25">Laden...</div>
-					</td>
-				</tr>
-				<tr id="AQI10tr" class="bg" style="display: none">
-					<td>
-						<div class="text">End-AQI (PM10)</div>
-						<div id="AQIavg10">Laden...</div>
-					</td>
-				</tr>
-				<tr id="AQItr" class="bg">
-					<td>
-						<div class="text">Schul-AQI</div>
-						<div id="AQI">Laden...</div>
-					</td>
-				</tr>
-			</table>
-			<br>
-			<hr>
-			<div id="Quelle">
-				<table>
-					<tr>
-						<td id="links"><b>Quelle PM2.5/PM10 Werte</b>: <br><a href="http://aq.ajosoft.com/index.php?StationID=2053" target="_blank">CDSC</a>, <a href="http://aq.ajosoft.com/index.php?StationID=2052" target="_blank">GIS</a>, <a href="http://aqmthai.com/public_report.php?lang=en" target="_blank">36t</a></td>
-						<td id="rechts"><b>Quelle AQI Berechnung</b>: <a href="http://www3.epa.gov/pm/2012/decfsstandards.pdf" target="_blank">EPA</a>/<a href="https://en.wikipedia.org/wiki/Air_quality_index#Computing_the_AQI" target="_blank">Wikipedia</a></td>
-					</tr>
-				</table>
-			</div>
 			<br>
 			<div id="aPinat" style="color: white; text-align: left; font-size: 150%"><i>- aPinat</i></div>
 		</div>
