@@ -21,58 +21,6 @@
 		<script src="js/Chart.bundle.min.js"></script>
 		<script src="js/localforage.min.js"></script>
 		<script src="js/aqi.js?v=1.5"></script>
-		<script type="text/javascript">
-			async function displayData() {
-				document.getElementById("36zeit").innerHTML = await localforage.getItem("36zeit");
-				document.getElementById("36pm25").innerHTML = await localforage.getItem("36pm25");
-				document.getElementById("36pm10").innerHTML = await localforage.getItem("36pm10");
-				document.getElementById("36aqi25").innerHTML = await localforage.getItem("36aqi25");
-				document.getElementById("36aqi10").innerHTML = await localforage.getItem("36aqi10");
-				setColor(await localforage.getItem("36aqi25"), "AQI2536");
-				setColor(await localforage.getItem("36aqi10"), "AQI1036");
-
-				document.getElementById("CDSCzeit").innerHTML = await localforage.getItem("CDSCzeit");
-				document.getElementById("CDSCpm25").innerHTML = await localforage.getItem("CDSCpm25");
-				document.getElementById("CDSCpm10").innerHTML = await localforage.getItem("CDSCpm10");
-				document.getElementById("CDSCaqi25").innerHTML = await localforage.getItem("CDSCaqi25");
-				document.getElementById("CDSCaqi10").innerHTML = await localforage.getItem("CDSCaqi10");
-				setColor(await localforage.getItem("CDSCaqi25"), "AQI25CDSC");
-				setColor(await localforage.getItem("CDSCaqi10"), "AQI10CDSC");
-
-				document.getElementById("GISzeit").innerHTML = await localforage.getItem("GISzeit");
-				document.getElementById("GISpm25").innerHTML = await localforage.getItem("GISpm25");
-				document.getElementById("GISpm10").innerHTML = await localforage.getItem("GISpm10");
-				document.getElementById("GISaqi25").innerHTML = await localforage.getItem("GISaqi25");
-				document.getElementById("GISaqi10").innerHTML = await localforage.getItem("GISaqi10");
-				setColor(await localforage.getItem("GISaqi25"), "AQI25GIS");
-				setColor(await localforage.getItem("GISaqi10"), "AQI10GIS");
-
-				document.getElementById("AQIavg25").innerHTML = await localforage.getItem("AQIavg25");
-				document.getElementById("AQIavg10").innerHTML = await localforage.getItem("AQIavg10");
-				setColor(await localforage.getItem("AQIavg25"), "AQI25tr");
-				setColor(await localforage.getItem("AQIavg10"), "AQI10tr");
-
-				document.getElementById("AQI").innerHTML = await localforage.getItem("AQI");
-				setColor(await localforage.getItem("AQI"), "AQItr");
-
-				document.getElementById("colordesc").innerHTML = await localforage.getItem("colordesc");
-				document.getElementById("action").innerHTML = await localforage.getItem("action");
-				document.getElementById("actionextra").innerHTML = await localforage.getItem("actionextra");
-				setAction(await localforage.getItem("AQI"), "main");
-				setColor(await localforage.getItem("AQI"), "info-header");
-				setColor(await localforage.getItem("AQI"), "info-footer");
-				setStyle(await localforage.getItem("AQI"), "main");
-
-				setIcon(await localforage.getItem("AQI"));
-			}
-
-			//window.onload = chart();
-			//setInterval(chart, 60000);
-
-			localforage.clear();
-			getData();
-			setInterval(getData, 60000);
-		</script>
 	</head>
 
 	<body>
@@ -81,21 +29,8 @@
 
 			<div id="time" style="display: none"></div>
 			<table class="border">
-				<tr id="AQI25tr" class="bg" style="display: none">
-					<td>
-						<div class="text">End-AQI (PM2.5)</div>
-						<div id="AQIavg25">Laden...</div>
-					</td>
-				</tr>
-				<tr id="AQI10tr" class="bg" style="display: none">
-					<td>
-						<div class="text">End-AQI (PM10)</div>
-						<div id="AQIavg10">Laden...</div>
-					</td>
-				</tr>
 				<tr id="AQItr" class="bg" style="font-size: 200%">
 					<td>
-
 						<div class="text">AQI<button id="openInfo">i</button></div>
 						<div id="AQI">Laden...</div>
 					</td>
@@ -226,5 +161,12 @@
 			}
 		}
 	</script>
+	<script type="text/javascript">
+		//window.onload = chart();
+		//setInterval(chart, 60000);
 
+		localforage.clear();
+		getData();
+		setInterval(getData, 60000);
+	</script>
 </html>

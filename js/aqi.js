@@ -1,7 +1,8 @@
 var XML = new XMLHttpRequest();
 var firstRequest = 1;
 
-async function getData() {
+function getData() {
+	//{"station36":{"time":"2017,04,29,19,00,00","pm25":12,"pm10":43,"online":1},"cdsc":{"time":2017,"pm25":18,"pm10":25,"aqi25":64,"aqi10":23,"online":1},"gis":{"time":0,"pm25":0,"pm10":0,"aqi25":0,"aqi10":0,"online":0}}
 	var url = "fetchData.php";
 	XML.onreadystatechange = showValue;
 	XML.open("GET", url, true);
@@ -9,261 +10,196 @@ async function getData() {
 	XML.send();
 }
 
-async function showValue() {
+function showValue() {
 	if (XML.readyState == 4) {
-		var data;
-		data = XML.responseText;
+		var data = {};
+		data = JSON.parse(XML.responseText);
 
-		var dataSplitArray = data.split(";");
-		console.log(dataSplitArray);
-
-		var _36pm25 = dataSplitArray[1];
-		var _36pm10 = dataSplitArray[2];
-		var zeitstr = dataSplitArray[0];
-
-		if (zeitstr === "-") {
-			var _36zeit = "36t-Station ist offline!";
+		//Station 36
+		if (data.station36.online === 0) {
+			data.station36.time = "36t-Station ist offline!";
 		} else {
-			var zeitarr = zeitstr.split(",");
+			var zeitarr = data.station36.time.split(",");
 			var stunde = parseFloat(zeitarr[3]) + 1;
 			var _36Datum = new Date(zeitarr[0] + "-" + zeitarr[1] + "-" + zeitarr[2] + " " + stunde + ":" + zeitarr[4] + ":" + zeitarr[5]);
 			_36time = _36Datum.getTime();
 			if (stunde >= 10) {
-				var _36zeit = "Stündlicher Wert vom <b>" + zeitarr[2] + "." + zeitarr[1] + "." + zeitarr[0] + "</b> um <b>" + stunde + ":" + zeitarr[4] + ":" + zeitarr[5] + "</b>";
+				data.station36.time = "Stündlicher Wert vom <b>" + zeitarr[2] + "." + zeitarr[1] + "." + zeitarr[0] + "</b> um <b>" + stunde + ":" + zeitarr[4] + ":" + zeitarr[5] + "</b>";
 			} else {
-				var _36zeit = "Stündlicher Wert vom <b>" + zeitarr[2] + "." + zeitarr[1] + "." + zeitarr[0] + "</b> um <b> 0" + stunde + ":" + zeitarr[4] + ":" + zeitarr[5] + "</b>";
+				data.station36.time = "Stündlicher Wert vom <b>" + zeitarr[2] + "." + zeitarr[1] + "." + zeitarr[0] + "</b> um <b> 0" + stunde + ":" + zeitarr[4] + ":" + zeitarr[5] + "</b>";
 			}
-			console.log(_36zeit);
+			localforage.setItem("station36", data.station36);
 		}
 
-		if (_36pm25 != "-" && _36pm10 != "-") {
-			_36pm25 = parseFloat(_36pm25).toFixed(2);
-			_36pm10 = parseFloat(_36pm10).toFixed(2);
+		if (firstRequest == 0 && data.station36.online === 0) {
+			localforage.getItem("station36", function (err, value) {
+				if(!err) {
+					data["station36"] = value;
+				}
+			});
 		}
-
-		if (firstRequest == 0) {
-			if (_36pm25 == "-" || _36pm10 == "-") {
-				_36zeit = await localforage.getItem("36zeit");
-				_36pm25 = await localforage.getItem("36pm25");
-				_36pm10 = await localforage.getItem("36pm10");
-			}
-		}
-
-		await localforage.setItem("36zeit", _36zeit);
-		await localforage.setItem("36pm25", _36pm25);
-		await localforage.setItem("36pm10", _36pm10);
 
 		//CDSC-Werte
-		var CDSCpm25 = dataSplitArray[4];
-		var CDSCpm10 = dataSplitArray[6];
-		var CDSCzeitstr = dataSplitArray[3];
-
-		var CDSCDatum = new Date(CDSCzeitstr);
-		CDSCDatum.setHours(CDSCDatum.getHours() + 7);
-		if (CDSCzeitstr != "-") {
-			var CDSCzeit = "Stündlicher Wert vom <b>" + ("0" + CDSCDatum.getDate()).slice(-2) + "." + ("0" + (CDSCDatum.getMonth() + 1)).slice(-2) + "." + CDSCDatum.getFullYear() + "</b> um <b>" + ("0" + CDSCDatum.getHours()).slice(-2) + ":" + ("0" + CDSCDatum.getMinutes()).slice(-2) + ":" + ("0" + CDSCDatum.getSeconds()).slice(-2) + "</b>";
+		if (data.cdsc.online === 0) {
+			data.cdsc.time = "CDSC-Station ist offline!";
+		} else {
+			var CDSCDatum = new Date(data.cdsc.time);
+			CDSCDatum.setHours(CDSCDatum.getHours() + 7);
+			data.cdsc.time = "Stündlicher Wert vom <b>" + ("0" + CDSCDatum.getDate()).slice(-2) + "." + ("0" + (CDSCDatum.getMonth() + 1)).slice(-2) + "." + CDSCDatum.getFullYear() + "</b> um <b>" + ("0" + CDSCDatum.getHours()).slice(-2) + ":" + ("0" + CDSCDatum.getMinutes()).slice(-2) + ":" + ("0" + CDSCDatum.getSeconds()).slice(-2) + "</b>";
 			CDSCtime = CDSCDatum.getTime();
 			//kiosk
-			await localforage.setItem("time", "Wert am <b>" + ("0" + CDSCDatum.getDate()).slice(-2) + "." + ("0" + (CDSCDatum.getMonth() + 1)).slice(-2) + "." + CDSCDatum.getFullYear() + ", " + ("0" + CDSCDatum.getHours()).slice(-2) + " Uhr</b>");
-		} else {
-			var CDSCzeit = "CDSC-Station ist offline!";
+			data.cdsc.kiosk = "Wert am <b>" + ("0" + CDSCDatum.getDate()).slice(-2) + "." + ("0" + (CDSCDatum.getMonth() + 1)).slice(-2) + "." + CDSCDatum.getFullYear() + ", " + ("0" + CDSCDatum.getHours()).slice(-2) + " Uhr</b>";
+
+			localforage.setItem("cdsc", data.cdsc);
 		}
 
-		if (CDSCpm25 != "-" && CDSCpm10 != "-") {
-			CDSCpm25 = parseFloat(CDSCpm25).toFixed(2);
-			CDSCpm10 = parseFloat(CDSCpm10).toFixed(2);
+		if (firstRequest == 0 && data.cdsc.online === 0) {
+			localforage.getItem("cdsc", function (err, value) {
+				if(!err) {
+					data["cdsc"] = value;
+				}
+			});
 		}
-
-		if (firstRequest == 0) {
-			if (CDSCpm25 == "-" || CDSCpm10 == "-") {
-				CDSCzeit = await localforage.getItem("CDSCzeit");
-				CDSCpm25 = await localforage.getItem("CDSCpm25");
-				CDSCpm10 = await localforage.getItem("CDSCpm10");
-			}
-		}
-
-		await localforage.setItem("CDSCzeit", CDSCzeit);
-		await localforage.setItem("CDSCpm25", CDSCpm25);
-		await localforage.setItem("CDSCpm10", CDSCpm10);
 
 		//GIS-Werte
-		var GISpm25 = dataSplitArray[9];
-		var GISpm10 = dataSplitArray[11];
-		var GISzeitstr = dataSplitArray[8];
-
-		var GISDatum = new Date(GISzeitstr);
+		var GISDatum = new Date(data.gis.time);
 		GISDatum.setHours(GISDatum.getHours() + 7);
 
-		if (GISzeitstr != "-") {
-			var GISzeit = "Stündlicher Wert vom <b>" + ("0" + GISDatum.getDate()).slice(-2) + "." + ("0" + (GISDatum.getMonth() + 1)).slice(-2) + "." + GISDatum.getFullYear() + "</b> um <b>" + ("0" + GISDatum.getHours()).slice(-2) + ":" + ("0" + GISDatum.getMinutes()).slice(-2) + ":" + ("0" + GISDatum.getSeconds()).slice(-2) + "</b>";
+		if (data.gis.online === 1) {
+			data.gis.time = "Stündlicher Wert vom <b>" + ("0" + GISDatum.getDate()).slice(-2) + "." + ("0" + (GISDatum.getMonth() + 1)).slice(-2) + "." + GISDatum.getFullYear() + "</b> um <b>" + ("0" + GISDatum.getHours()).slice(-2) + ":" + ("0" + GISDatum.getMinutes()).slice(-2) + ":" + ("0" + GISDatum.getSeconds()).slice(-2) + "</b>";
 			GIStime = GISDatum.getTime();
+			localforage.setItem("gis", data.cdsc);
 		} else {
-			var GISzeit = "GIS-Station ist offline!";
+			data.gis.time = "GIS-Station ist offline!";
 		}
 
-		if (GISpm25 != "-" && GISpm10 != "-") {
-			GISpm25 = parseFloat(GISpm25).toFixed(2);
-			GISpm10 = parseFloat(GISpm10).toFixed(2);
+		if (firstRequest == 0 && data.gis.online === 0) {
+			localforage.getItem("gis", function (err, value) {
+				if(!err) {
+					data["gis"] = value;
+				}
+			});
 		}
-
-		if (firstRequest == 0) {
-			if (GISpm25 == "-" || GISpm10 == "-") {
-				GISzeit = await localforage.getItem("GISzeit");
-				GISpm25 = await localforage.getItem("GISpm25");
-				GISpm10 = await localforage.getItem("GISpm10");
-			}
-		}
-
-		await localforage.setItem("GISzeit", GISzeit);
-		await localforage.setItem("GISpm25", GISpm25);
-		await localforage.setItem("GISpm10", GISpm10);
-
 		firstRequest = 0;
 
-		await aqipm25();
-		await aqipm10();
-		await aqiavg();
-		await compareaqi();
-		await displayData();
+		displayData(data);
 	}
 }
 
+function displayData(inData) {
+	console.log(inData);
+	//Station 36
+	document.getElementById("36zeit").innerHTML = inData.station36.time;
+	document.getElementById("36pm25").innerHTML = (inData.station36.pm25 === 0) ? "Kein PM2.5 Wert" : inData.station36.pm25;
+	document.getElementById("36pm10").innerHTML = (inData.station36.pm25 === 0) ? "Kein PM10 Wert" : inData.station36.pm10;
+	document.getElementById("36aqi25").innerHTML = calcaqi25(inData.station36.pm25);
+	document.getElementById("36aqi10").innerHTML = calcaqi10(inData.station36.pm10);
+	setColor(calcaqi25(inData.station36.pm25), "AQI2536");
+	setColor(calcaqi10(inData.station36.pm10), "AQI1036");
 
-async function setData(pm10, pm25) {
-	await localforage.setItem("36pm25", pm25);
-	await localforage.setItem("36pm10", pm10);
+	//CDSC
+	document.getElementById("CDSCzeit").innerHTML = inData.cdsc.time;
+	document.getElementById("CDSCpm25").innerHTML = (inData.cdsc.pm25 === 0) ? "Kein PM2.5 Wert" : inData.cdsc.pm25;
+	document.getElementById("CDSCpm10").innerHTML = (inData.cdsc.pm25 === 0) ? "Kein PM10 Wert" : inData.cdsc.pm10;
+	document.getElementById("CDSCaqi25").innerHTML = calcaqi25(inData.cdsc.pm25);
+	document.getElementById("CDSCaqi10").innerHTML = calcaqi10(inData.cdsc.pm10);
+	setColor(calcaqi25(inData.cdsc.pm25), "AQI25CDSC");
+	setColor(calcaqi10(inData.cdsc.pm10), "AQI10CDSC");
 
-	await localforage.setItem("CDSCpm25", pm25);
-	await localforage.setItem("CDSCpm10", pm10);
+	//GIS
+	document.getElementById("GISzeit").innerHTML = inData.gis.time;
+	document.getElementById("GISpm25").innerHTML = (inData.gis.pm25 === 0) ? "Kein PM2.5 Wert" : inData.gis.pm25;
+	document.getElementById("GISpm10").innerHTML = (inData.gis.pm25 === 0) ? "Kein PM10 Wert" : inData.gis.pm10;
+	document.getElementById("GISaqi25").innerHTML = calcaqi25(inData.gis.pm25);
+	document.getElementById("GISaqi10").innerHTML = calcaqi10(inData.gis.pm10);
+	setColor(calcaqi25(inData.gis.pm25), "AQI25GIS");
+	setColor(calcaqi10(inData.gis.pm10), "AQI10GIS");
 
-	await localforage.setItem("GISpm25", pm25);
-	await localforage.setItem("GISpm10", pm10);
+	//Average AQI
+	var avg = aqiavg(inData);
+	document.getElementById("AQI").innerHTML = avg.aqi;
+	setColor(avg.aqi, "AQItr");
 
-	//CallFunctions
-	await aqipm25();
-	await aqipm10();
-	await aqiavg();
-	await compareaqi();
-	await displayData();
+	// document.getElementById("colordesc").innerHTML = await localforage.getItem("colordesc");
+	// document.getElementById("action").innerHTML = await localforage.getItem("action");
+	// document.getElementById("actionextra").innerHTML = await localforage.getItem("actionextra");
+	// setAction(await localforage.getItem("AQI"), "main");
+	// setColor(await localforage.getItem("AQI"), "info-header");
+	// setColor(await localforage.getItem("AQI"), "info-footer");
+	// setStyle(await localforage.getItem("AQI"), "main");
+
+	setIcon(avg.aqi);
 }
 
-async function aqipm25() {
-	await calcaqi25("36pm25", "36aqi25", "AQI2536");
 
-	await calcaqi25("CDSCpm25", "CDSCaqi25", "AQI25CDSC");
-
-	await calcaqi25("GISpm25", "GISaqi25", "AQI25GIS");
+function aqipm25(inData) {
+	 if (inData.station36) calcaqi25("36pm25", inData.station36.pm25);
+	 if (inData.cdsc) calcaqi25("CDSCpm25", inData.cdsc.pm25);
+	 if (inData.gis) calcaqi25("GISpm25", inData.gis.pm25);
 }
 
-async function aqipm10() {
-	await calcaqi10("36pm10", "36aqi10", "AQI1036");
-
-	await calcaqi10("CDSCpm10", "CDSCaqi10", "AQI10CDSC");
-
-	await calcaqi10("GISpm10", "GISaqi10", "AQI10GIS");
+function aqipm10(inData) {
+	if (inData.station36) calcaqi10("36pm25", inData.station36.pm10);
+	if (inData.cdsc) calcaqi10("CDSCpm25", inData.cdsc.pm10);
+	if (inData.gis) calcaqi10("GISpm25", inData.gis.pm10);
 }
 
-async function aqiavg() {
-	var _36pm25 = await localforage.getItem("36aqi25");
-	var _36pm10 = await localforage.getItem("36aqi10");
-	var CDSCaqi25 = await localforage.getItem("CDSCaqi25");
-	var CDSCaqi10 = await localforage.getItem("CDSCaqi10");
-	var GISaqi25 = await localforage.getItem("GISaqi25");
-	var GISaqi10 = await localforage.getItem("GISaqi10");
+function aqiavg(inData) {
+	var _36pm25 =  inData.station36.pm25;
+	var _36pm10 =  inData.station36.pm10;
+	var CDSCaqi25 =  calcaqi25(inData.cdsc.pm25);
+	var CDSCaqi10 =  calcaqi10(inData.cdsc.pm10);
+	var GISaqi25 =  calcaqi25(inData.gis.pm25);
+	var GISaqi10 =  calcaqi10(inData.gis.pm10);
 	var arrayAQI10 = [];
 	var arrayAQI25 = [];
 
-	if (_36pm25 != "Kein PM2.5-Wert") {
-		var i = arrayAQI25.length;
-		arrayAQI25[i] = parseFloat(_36pm25);
-	}
+	var aqiavg25 = 0;
+	var aqiavg10 = 0;
 
-	if (GISaqi25 != "Kein PM2.5-Wert") {
-		var i = arrayAQI25.length;
-		arrayAQI25[i] = parseFloat(GISaqi25);
-	}
-
-	if (_36pm10 != "Kein PM10-Wert") {
-		var i = arrayAQI10.length;
-		arrayAQI10[i] = parseFloat(_36pm10);
-	}
-
-	if (GISaqi10 != "Kein PM10-Wert") {
-		var i = arrayAQI10.length;
-		arrayAQI10[i] = parseFloat(GISaqi10);
-	}
+	if (_36pm25 != "Kein PM2.5-Wert") arrayAQI25.push(_36pm25);
+	if (GISaqi25 != "Kein PM2.5-Wert") arrayAQI25.push(GISaqi25);
+	if (_36pm10 != "Kein PM10-Wert") arrayAQI10.push(_36pm10);
+	if (GISaqi10 != "Kein PM10-Wert") arrayAQI10.push(GISaqi10);
 
 	//PM2.5
+	var sumaqi25 = 0;
+	for (var i = 0; i < arrayAQI25.length; i++) {
+		sumaqi25 += arrayAQI25[i];
+	}
+	aqiavg25 = sumaqi25 / arrayAQI25.length;
+
 	if (CDSCaqi25 != "Kein PM2.5-Wert") {
-		var sumaqi25 = 0;
-		for (var i = 0; i < arrayAQI25.length; i++) {
-			sumaqi25 += arrayAQI25[i];
-		}
-
-		if (isNaN (sumaqi25) || sumaqi25 == 0) {
-			var aqiavg25CDSC = parseFloat(CDSCaqi25);
-		} else {
-			var aqiavg25 = sumaqi25 / arrayAQI25.length;
-
-			var aqiavg25CDSC = (aqiavg25 + parseFloat(CDSCaqi25)) / 2;
-		}
-
-		await localforage.setItem("AQIavg25", aqiavg25CDSC.toFixed(2));
-	} else {
-		var sumaqi25 = 0;
-		for (var i = 0; i < arrayAQI25.length; i++) {
-			sumaqi25 += arrayAQI25[i];
-		}
-		var aqiavg25 = sumaqi25 / arrayAQI25.length;
-
-		await localforage.setItem("AQIavg25", aqiavg25.toFixed(2));
+		aqiavg25 = (parseFloat(aqiavg25) + parseFloat(CDSCaqi25)) / 2;
 	}
 
 	//PM10
-	if (CDSCaqi10 != "Kein PM10-Wert") {
-		var sumaqi10 = 0;
-		for (var i = 0; i < arrayAQI10.length; i++) {
-			sumaqi10 += arrayAQI10[i];
-		}
-		if (isNaN (sumaqi10) || sumaqi10 == 0) {
-			var aqiavg10CDSC = parseFloat(CDSCaqi10);
-		} else {
-			var aqiavg10 = sumaqi10 / arrayAQI10.length;
-
-			var aqiavg10CDSC = (aqiavg10 + parseFloat(CDSCaqi10)) / 2;
-		}
-		await localforage.setItem("AQIavg10", aqiavg10CDSC.toFixed(2));
-	} else {
-		var sumaqi10 = 0;
-		for (var i = 0; i < arrayAQI10.length; i++) {
-			sumaqi10 += arrayAQI10[i];
-		}
-		var aqiavg10 = sumaqi10 / arrayAQI10.length;
-
-		await localforage.setItem("AQIavg10", aqiavg10.toFixed(2));
+	var sumaqi10 = 0;
+	for (var i = 0; i < arrayAQI10.length; i++) {
+		sumaqi10 += arrayAQI10[i];
 	}
-}
+	var aqiavg10 = sumaqi10 / arrayAQI10.length;
 
-async function compareaqi() {
-	var aqiavg10 = parseFloat(await localforage.getItem("AQIavg10"));
-	var aqiavg25 = parseFloat(await localforage.getItem("AQIavg25"));
+	if (CDSCaqi10 != "Kein PM10-Wert") {
+		aqiavg10 = (parseFloat(aqiavg10) + parseFloat(CDSCaqi10)) / 2;
+	}
 
+	//Compare AQIs
 	var aqi = Math.max(aqiavg10, aqiavg25);
 	console.log(aqi);
 	if (isNaN (aqi) || aqi == 0) {
-		await localforage.setItem("AQI", "Offline!");
-		await localforage.setItem("AQIkiosk", "Offline!");
+		return {"aqi": "Offline!", "kiosk": "Offline!"}
 	} else {
-		await localforage.setItem("AQI", aqi.toFixed(2));
-		await localforage.setItem("AQIkiosk", aqi.toFixed(0));
+		 return {"aqi": aqi.toFixed(2), "kiosk": aqi.toFixed(0)}
 	}
+}
 
-	setIcon();
-
+function compareaqi(aqiavg25, aqiavg10) {
+	console.log(aqiavg25, aqiavg10);
 
 }
 
-async function calcaqi25(pm25div, AQI25div, AQI25td) {
+function calcaqi25(pm25) {
 	var pm1 = 0;
 	var pm2 = 12;
 	var pm3 = 35.4;
@@ -282,32 +218,32 @@ async function calcaqi25(pm25div, AQI25div, AQI25td) {
 	var aqi7 = 400;
 	var aqi8 = 500;
 
-	if (await localforage.getItem(pm25div) != "-") {
-		var pm25 = parseFloat(await localforage.getItem(pm25div));
+	var aqipm25 = 0;
 
+	if (pm25 != 0) {
 		if (pm25 >= pm1 && pm25 <= pm2) {
-			var aqipm25 = ((aqi2 - aqi1) / (pm2 - pm1)) * (pm25 - pm1) + aqi1;
+			aqipm25 = ((aqi2 - aqi1) / (pm2 - pm1)) * (pm25 - pm1) + aqi1;
 		} else if (pm25 >= pm2 && pm25 <= pm3) {
-			var aqipm25 = ((aqi3 - aqi2) / (pm3 - pm2)) * (pm25 - pm2) + aqi2;
+			aqipm25 = ((aqi3 - aqi2) / (pm3 - pm2)) * (pm25 - pm2) + aqi2;
 		} else if (pm25 >= pm3 && pm25 <= pm4) {
-			var aqipm25 = ((aqi4 - aqi3) / (pm4 - pm3)) * (pm25 - pm3) + aqi3;
+			aqipm25 = ((aqi4 - aqi3) / (pm4 - pm3)) * (pm25 - pm3) + aqi3;
 		} else if (pm25 >= pm4 && pm25 <= pm5) {
-			var aqipm25 = ((aqi5 - aqi4) / (pm5 - pm4)) * (pm25 - pm4) + aqi4;
+			aqipm25 = ((aqi5 - aqi4) / (pm5 - pm4)) * (pm25 - pm4) + aqi4;
 		} else if (pm25 >= pm5 && pm25 <= pm6) {
-			var aqipm25 = ((aqi6 - aqi5) / (pm6 - pm5)) * (pm25 - pm5) + aqi5;
+			aqipm25 = ((aqi6 - aqi5) / (pm6 - pm5)) * (pm25 - pm5) + aqi5;
 		} else if (pm25 >= pm6 && pm25 <= pm7) {
-			var aqipm25 = ((aqi7 - aqi6) / (pm7 - pm6)) * (pm25 - pm6) + aqi6;
+			aqipm25 = ((aqi7 - aqi6) / (pm7 - pm6)) * (pm25 - pm6) + aqi6;
 		} else if (pm25 >= pm7 && pm25 <= pm8) {
-			var aqipm25 = ((aqi8 - aqi7) / (pm8 - pm7)) * (pm25 - pm7) + aqi7;
+			aqipm25 = ((aqi8 - aqi7) / (pm8 - pm7)) * (pm25 - pm7) + aqi7;
 		}
 		console.log(aqipm25);
-		await localforage.setItem(AQI25div, aqipm25.toFixed(2));
+		return aqipm25.toFixed(2)
 	} else {
-		await localforage.setItem(AQI25div, "Kein PM2.5-Wert");
+		 return "Kein PM2.5-Wert"
 	}
 }
 
-async function calcaqi10(pm10div, AQI10div, AQI10td) {
+function calcaqi10(pm10) {
 	var pm1 = 0;
 	var pm2 = 54;
 	var pm3 = 154;
@@ -326,33 +262,33 @@ async function calcaqi10(pm10div, AQI10div, AQI10td) {
 	var aqi7 = 400;
 	var aqi8 = 500;
 
-	if (await localforage.getItem(pm10div) != "-") {
-		var pm10 = parseFloat(await localforage.getItem(pm10div));
+	var aqipm10 = 0;
 
+	if (pm10 != 0) {
 		if (pm10 >= pm1 && pm10 <= pm2) {
-			var aqipm10 = ((aqi2 - aqi1) / (pm2 - pm1)) * (pm10 - pm1) + aqi1;
+			aqipm10 = ((aqi2 - aqi1) / (pm2 - pm1)) * (pm10 - pm1) + aqi1;
 		} else if (pm10 >= pm2 && pm10 <= pm3) {
-			var aqipm10 = ((aqi3 - aqi2) / (pm3 - pm2)) * (pm10 - pm2) + aqi2;
+			aqipm10 = ((aqi3 - aqi2) / (pm3 - pm2)) * (pm10 - pm2) + aqi2;
 		} else if (pm10 >= pm3 && pm10 <= pm4) {
-			var aqipm10 = ((aqi4 - aqi3) / (pm4 - pm3)) * (pm10 - pm3) + aqi3;
+			aqipm10 = ((aqi4 - aqi3) / (pm4 - pm3)) * (pm10 - pm3) + aqi3;
 		} else if (pm10 >= pm4 && pm10 <= pm5) {
-			var aqipm10 = ((aqi5 - aqi4) / (pm5 - pm4)) * (pm10 - pm4) + aqi4;
+			aqipm10 = ((aqi5 - aqi4) / (pm5 - pm4)) * (pm10 - pm4) + aqi4;
 		} else if (pm10 >= pm5 && pm10 <= pm6) {
-			var aqipm10 = ((aqi6 - aqi5) / (pm6 - pm5)) * (pm10 - pm5) + aqi5;
+			aqipm10 = ((aqi6 - aqi5) / (pm6 - pm5)) * (pm10 - pm5) + aqi5;
 		} else if (pm10 >= pm6 && pm10 <= pm7) {
-			var aqipm10 = ((aqi7 - aqi6) / (pm7 - pm6)) * (pm10 - pm6) + aqi6;
+			aqipm10 = ((aqi7 - aqi6) / (pm7 - pm6)) * (pm10 - pm6) + aqi6;
 		} else if (pm10 >= pm7 && pm10 <= pm8) {
-			var aqipm10 = ((aqi8 - aqi7) / (pm8 - pm7)) * (pm10 - pm7) + aqi7;
+			aqipm10 = ((aqi8 - aqi7) / (pm8 - pm7)) * (pm10 - pm7) + aqi7;
 		}
-		console.log(aqipm10);
-		await localforage.setItem(AQI10div, aqipm10.toFixed(2));
-
+		console.log(aqipm10.toFixed(2));
+		return aqipm10.toFixed(2)
 	} else {
-		await localforage.setItem(AQI10div, "Kein PM10-Wert");
+		 return "Kein PM10-Wert"
 	}
 }
 
 function setColor(aqivalue, AQItd) {
+	console.log(aqivalue, AQItd);
 	if (aqivalue < 50) {
 		document.getElementById(AQItd).style.backgroundColor = "#00ff00";
 		document.getElementById(AQItd).style.color = "black";
