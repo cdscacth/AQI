@@ -59,14 +59,14 @@
 		$_36online = 0;
 	}
 	// CDSC
-	$resultcdsc = file_get_contents("http://aq.ajosoft.com/getdata.php?StationID=2053&days=1", NULL, NULL, 83, 47);
-	$CDSCarray = explode(", ", $resultcdsc);
-	if (count($CDSCarray) > 1) {
-		$CDSCzeit = intval($CDSCarray[0]);
-		$CDSCpm10 = intval($CDSCarray[1]);
-		$CDSCaqi10 = intval($CDSCarray[2]);
-		$CDSCpm25 = intval($CDSCarray[3]);
-		$CDSCaqi25 = intval($CDSCarray[4]);
+	$resultcdsc = json_decode(file_get_contents("data/cdsc.json", NULL, NULL), true);
+	$CDSCarray = $resultcdsc[count($resultcdsc)-1];
+	if (count($CDSCarray) > 0) {
+		$CDSCzeit = $CDSCarray["time"];
+		$CDSCpm10 = intval($CDSCarray["pm10"]);
+		$CDSCpm25 = intval($CDSCarray["pm25"]);
+		$CDSCaqi10 = 0;
+		$CDSCaqi25 = 0;
 		$CDSConline = 1;
 	}
 	else {
@@ -81,7 +81,7 @@
 	$resultgis = file_get_contents("http://aq.ajosoft.com/getdata.php?StationID=2052&days=1", NULL, NULL, 83, 47);
 	$GISarray = explode(", ", $resultgis);
 	if (count($GISarray) > 1) {
-		$GISzeit = intval($GISarray[0]);
+		$GISzeit = $GISarray[0];
 		$GISpm10 = intval($GISarray[1]);
 		$GISaqi10 = intval($GISarray[2]);
 		$GISpm25 = intval($GISarray[3]);

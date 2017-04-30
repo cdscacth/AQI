@@ -1,16 +1,16 @@
 var XML = new XMLHttpRequest();
 var firstRequest = 1;
 
-function getData() {
+function getData(isKiosk) {
 	//{"station36":{"time":"2017,04,29,19,00,00","pm25":12,"pm10":43,"online":1},"cdsc":{"time":2017,"pm25":18,"pm10":25,"aqi25":64,"aqi10":23,"online":1},"gis":{"time":0,"pm25":0,"pm10":0,"aqi25":0,"aqi10":0,"online":0}}
 	var url = "fetchData.php";
-	XML.onreadystatechange = showValue;
+	XML.onreadystatechange = function(){showValue(isKiosk)};
 	XML.open("GET", url, true);
 	XML.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	XML.send();
 }
 
-function showValue() {
+function showValue(isKiosk) {
 	if (XML.readyState == 4) {
 		var data = {};
 		data = JSON.parse(XML.responseText);
@@ -44,11 +44,10 @@ function showValue() {
 			data.cdsc.time = "CDSC-Station ist offline!";
 		} else {
 			var CDSCDatum = new Date(data.cdsc.time);
-			CDSCDatum.setHours(CDSCDatum.getHours() + 7);
 			data.cdsc.time = "Stündlicher Wert vom <b>" + ("0" + CDSCDatum.getDate()).slice(-2) + "." + ("0" + (CDSCDatum.getMonth() + 1)).slice(-2) + "." + CDSCDatum.getFullYear() + "</b> um <b>" + ("0" + CDSCDatum.getHours()).slice(-2) + ":" + ("0" + CDSCDatum.getMinutes()).slice(-2) + ":" + ("0" + CDSCDatum.getSeconds()).slice(-2) + "</b>";
 			CDSCtime = CDSCDatum.getTime();
 			//kiosk
-			data.cdsc.kiosk = "Wert am <b>" + ("0" + CDSCDatum.getDate()).slice(-2) + "." + ("0" + (CDSCDatum.getMonth() + 1)).slice(-2) + "." + CDSCDatum.getFullYear() + ", " + ("0" + CDSCDatum.getHours()).slice(-2) + " Uhr</b>";
+			data.cdsc.kiosk = "Wert am <b>" + ("0" + CDSCDatum.getDate()).slice(-2) + "." + ("0" + (CDSCDatum.getMonth() + 1)).slice(-2) + "." + CDSCDatum.getFullYear() + ", " + ("0" + CDSCDatum.getHours()).slice(-2) + ":" + ("0" + CDSCDatum.getMinutes()).slice(-2) + " Uhr</b>";
 
 			localforage.setItem("cdsc", data.cdsc);
 		}
@@ -82,10 +81,11 @@ function showValue() {
 		}
 		firstRequest = 0;
 
-		displayData(data);
+		displayData(data, false, isKiosk);
 	}
 }
 
+/*
 function getCDSCData(isKiosk) {
 	var url ="data/cdsc.json";
 	XML.onreadystatechange = function () {
@@ -100,10 +100,11 @@ function getCDSCData(isKiosk) {
 	XML.open("GET", url, true);
 	XML.send();
 }
+*/
 
 function displayData(inData, isCDSCOnly, isKiosk) {
 	console.log(inData, isCDSCOnly);
-
+	/*
 	if (isCDSCOnly) {
 		if (isKiosk) {
 			var aqi = Math.max(calcaqi25(inData.pm25), calcaqi10(inData.pm10));
@@ -117,10 +118,23 @@ function displayData(inData, isCDSCOnly, isKiosk) {
 			setAction(aqi);
 			setStyle(aqi);
 			setFontSize(aqi);
-		} else {
-				//handle index.html
+			setIcon(aqi);
 		}
+	}
+	*/
+	if (isKiosk) {
+		var avg = aqiavg(inData);
+		var time = new Date(inData.time);
+		document.getElementById("time").innerHTML = inData.cdsc.kiosk;
+		document.getElementById("AQIkiosk").innerHTML = avg.kiosk;
 
+		setColor(avg.aqi, "AQItr");
+		setFontColor(avg.aqi);
+
+		setAction(avg.aqi);
+		setStyle(avg.aqi);
+		setFontSize(avg.aqi);
+		setIcon(avg.aqi);
 	} else {
 		//Station 36
 		document.getElementById("36zeit").innerHTML = inData.station36.time;
@@ -154,13 +168,11 @@ function displayData(inData, isCDSCOnly, isKiosk) {
 		document.getElementById("AQI").innerHTML = avg.aqi;
 		setColor(avg.aqi, "AQItr");
 
-		// document.getElementById("colordesc").innerHTML = await localforage.getItem("colordesc");
-		// document.getElementById("action").innerHTML = await localforage.getItem("action");
-		// document.getElementById("actionextra").innerHTML = await localforage.getItem("actionextra");
-		// setAction(await localforage.getItem("AQI"), "main");
-		// setColor(await localforage.getItem("AQI"), "info-header");
-		// setColor(await localforage.getItem("AQI"), "info-footer");
-		// setStyle(await localforage.getItem("AQI"), "main");
+		setColor(avg.aqi, "info-header");
+		setColor(avg.aqi, "info-footer");
+
+		setAction(avg.aqi, "main");
+		setStyle(avg.aqi, "main");
 
 		setIcon(avg.aqi);
 	}
@@ -168,8 +180,8 @@ function displayData(inData, isCDSCOnly, isKiosk) {
 }
 
 function aqiavg(inData) {
-	var _36pm25 =  inData.station36.pm25;
-	var _36pm10 =  inData.station36.pm10;
+	var _36pm25 =  calcaqi25(inData.station36.pm25);
+	var _36pm10 =  calcaqi10(inData.station36.pm10);
 	var CDSCaqi25 =  calcaqi25(inData.cdsc.pm25);
 	var CDSCaqi10 =  calcaqi10(inData.cdsc.pm10);
 	var GISaqi25 =  calcaqi25(inData.gis.pm25);
@@ -188,10 +200,11 @@ function aqiavg(inData) {
 	//PM2.5
 	var sumaqi25 = 0;
 	for (var i = 0; i < arrayAQI25.length; i++) {
-		sumaqi25 += arrayAQI25[i];
+		sumaqi25 += parseFloat(arrayAQI25[i]);
+		console.log(sumaqi25);
 	}
 	aqiavg25 = sumaqi25 / arrayAQI25.length;
-
+	console.log(aqiavg25);
 	if (CDSCaqi25 != "Kein PM2.5-Wert") {
 		aqiavg25 = (parseFloat(aqiavg25) + parseFloat(CDSCaqi25)) / 2;
 	}
@@ -199,7 +212,7 @@ function aqiavg(inData) {
 	//PM10
 	var sumaqi10 = 0;
 	for (var i = 0; i < arrayAQI10.length; i++) {
-		sumaqi10 += arrayAQI10[i];
+		sumaqi10 += parseFloat(arrayAQI10[i]);
 	}
 	var aqiavg10 = sumaqi10 / arrayAQI10.length;
 
@@ -500,36 +513,32 @@ var action = {
 
 function chart() {
 	var xml = new XMLHttpRequest();
-	var url = "fetchDataChart.php";
+	var url = "data/cdsc.json";
 	var chartload = 0;
-	var CDSCchart
+	var CDSCchart;
 
 	xml.onreadystatechange = function() {
 		if (xml.readyState == 4 && xml.status == 200) {
 			var dataCDSC = JSON.parse(xml.responseText);
-			var j = dataCDSC.length / 3;
-			console.log(j);
+			var j = dataCDSC.length;
 			var labels = [];
 			var pm25data = [];
 			var pm10data = [];
 
 			for (var i = 0; i < j; i++) {
-				var time = dataCDSC[0 + 3 * i] + "+00";
+				var time = dataCDSC[i].time.replace(/\//g, "-");
 				labels.push(time);
 			}
-			labels.reverse();
 
 			for (var i = 0; i < j; i++) {
-				var pm10 = dataCDSC[1 + 3 * i];
+				var pm10 = dataCDSC[i].pm10;
 				pm10data.push(pm10);
 			}
-			pm10data.reverse();
 
 			for (var i = 0; i < j; i++) {
-				var pm25 = dataCDSC[2 + 3 * i];
+				var pm25 = dataCDSC[i].pm25;
 				pm25data.push(pm25);
 			}
-			pm25data.reverse();
 
 			if (chartload == 0) {
 				var ctx = document.getElementById("ChartCDSC").getContext('2d');

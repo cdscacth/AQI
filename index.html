@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<title>Aktueller AQI an der CDSC</title>
 		<meta charset="utf-8" />
@@ -20,7 +19,7 @@
 		<link id="ico" rel="shortcut icon" href="images/icon.png" />
 		<script src="js/Chart.bundle.min.js"></script>
 		<script src="js/localforage.min.js"></script>
-		<script src="js/aqi.js?v=1.5"></script>
+		<script src="js/aqi.js?v=1.6"></script>
 	</head>
 
 	<body>
@@ -62,7 +61,7 @@
 				</tr>
 			</table>
 			<br>
-			<canvas id="ChartCDSC" height="100" hidden="1"></canvas>
+			<canvas id="ChartCDSC" height="100"></canvas>
 			<br>
 			<div id="GISzeit">Laden...</div><br>
 			<table class="border">
@@ -117,7 +116,7 @@
 			<div id="Quelle">
 				<table>
 					<tr>
-						<td id="links"><b>Quelle PM2.5/PM10 Werte</b>: <br><a href="http://aq.ajosoft.com/index.php?StationID=2053" target="_blank">CDSC</a>, <a href="http://aq.ajosoft.com/index.php?StationID=2052" target="_blank">GIS</a>, <a href="http://aqmthai.com/public_report.php?lang=en" target="_blank">36t</a></td>
+						<td id="links"><b>Quelle PM2.5/PM10 Werte</b>: <br><a href="data/cdsc.json" target="_blank">CDSC</a>, <a href="http://aq.ajosoft.com/index.php?StationID=2052" target="_blank">GIS</a>, <a href="http://aqmthai.com/public_report.php?lang=en" target="_blank">36t</a></td>
 						<td id="rechts"><b>Quelle AQI Berechnung</b>: <a href="http://www3.epa.gov/pm/2012/decfsstandards.pdf" target="_blank">EPA</a>/<a href="https://en.wikipedia.org/wiki/Air_quality_index#Computing_the_AQI" target="_blank">Wikipedia</a></td>
 					</tr>
 				</table>
@@ -162,8 +161,8 @@
 		}
 	</script>
 	<script type="text/javascript">
-		//window.onload = chart();
-		//setInterval(chart, 60000);
+		window.onload = chart();
+		setInterval(chart, 60000);
 
 		getData();
 		setInterval(getData, 60000);
