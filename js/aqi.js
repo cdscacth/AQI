@@ -107,7 +107,8 @@ function displayData(inData, isCDSCOnly, isKiosk) {
 	if (isCDSCOnly) {
 		if (isKiosk) {
 			var aqi = Math.max(calcaqi25(inData.pm25), calcaqi10(inData.pm10));
-			document.getElementById("time").innerHTML = inData.time;
+			var time = new Date(inData.time);
+			document.getElementById("time").innerHTML = "Wert am <b>" + ("0" + time.getDate()).slice(-2) + "." + ("0" + (time.getMonth() + 1)).slice(-2) + "." + time.getFullYear() + ", " + ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2) + " Uhr</b>";
 			document.getElementById("AQIkiosk").innerHTML = aqi;
 
 			setColor(aqi, "AQItr");
