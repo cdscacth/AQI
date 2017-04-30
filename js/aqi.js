@@ -86,62 +86,84 @@ function showValue() {
 	}
 }
 
-function displayData(inData) {
-	console.log(inData);
-	//Station 36
-	document.getElementById("36zeit").innerHTML = inData.station36.time;
-	document.getElementById("36pm25").innerHTML = (inData.station36.pm25 === 0) ? "Kein PM2.5 Wert" : inData.station36.pm25;
-	document.getElementById("36pm10").innerHTML = (inData.station36.pm25 === 0) ? "Kein PM10 Wert" : inData.station36.pm10;
-	document.getElementById("36aqi25").innerHTML = calcaqi25(inData.station36.pm25);
-	document.getElementById("36aqi10").innerHTML = calcaqi10(inData.station36.pm10);
-	setColor(calcaqi25(inData.station36.pm25), "AQI2536");
-	setColor(calcaqi10(inData.station36.pm10), "AQI1036");
+function getCDSCData(isKiosk) {
+	var url ="data/cdsc.json";
+	XML.onreadystatechange = function () {
+		if (XML.readyState == 4) {
+			var data = {};
+			data = JSON.parse(XML.responseText);
+			var lastReading = data[data.length-1];
 
-	//CDSC
-	document.getElementById("CDSCzeit").innerHTML = inData.cdsc.time;
-	document.getElementById("CDSCpm25").innerHTML = (inData.cdsc.pm25 === 0) ? "Kein PM2.5 Wert" : inData.cdsc.pm25;
-	document.getElementById("CDSCpm10").innerHTML = (inData.cdsc.pm25 === 0) ? "Kein PM10 Wert" : inData.cdsc.pm10;
-	document.getElementById("CDSCaqi25").innerHTML = calcaqi25(inData.cdsc.pm25);
-	document.getElementById("CDSCaqi10").innerHTML = calcaqi10(inData.cdsc.pm10);
-	setColor(calcaqi25(inData.cdsc.pm25), "AQI25CDSC");
-	setColor(calcaqi10(inData.cdsc.pm10), "AQI10CDSC");
-
-	//GIS
-	document.getElementById("GISzeit").innerHTML = inData.gis.time;
-	document.getElementById("GISpm25").innerHTML = (inData.gis.pm25 === 0) ? "Kein PM2.5 Wert" : inData.gis.pm25;
-	document.getElementById("GISpm10").innerHTML = (inData.gis.pm25 === 0) ? "Kein PM10 Wert" : inData.gis.pm10;
-	document.getElementById("GISaqi25").innerHTML = calcaqi25(inData.gis.pm25);
-	document.getElementById("GISaqi10").innerHTML = calcaqi10(inData.gis.pm10);
-	setColor(calcaqi25(inData.gis.pm25), "AQI25GIS");
-	setColor(calcaqi10(inData.gis.pm10), "AQI10GIS");
-
-	//Average AQI
-	var avg = aqiavg(inData);
-	document.getElementById("AQI").innerHTML = avg.aqi;
-	setColor(avg.aqi, "AQItr");
-
-	// document.getElementById("colordesc").innerHTML = await localforage.getItem("colordesc");
-	// document.getElementById("action").innerHTML = await localforage.getItem("action");
-	// document.getElementById("actionextra").innerHTML = await localforage.getItem("actionextra");
-	// setAction(await localforage.getItem("AQI"), "main");
-	// setColor(await localforage.getItem("AQI"), "info-header");
-	// setColor(await localforage.getItem("AQI"), "info-footer");
-	// setStyle(await localforage.getItem("AQI"), "main");
-
-	setIcon(avg.aqi);
+			displayData(lastReading, true, isKiosk)
+		}
+	}
+	XML.open("GET", url, true);
+	XML.send();
 }
 
+function displayData(inData, isCDSCOnly, isKiosk) {
+	console.log(inData, isCDSCOnly);
 
-function aqipm25(inData) {
-	 if (inData.station36) calcaqi25("36pm25", inData.station36.pm25);
-	 if (inData.cdsc) calcaqi25("CDSCpm25", inData.cdsc.pm25);
-	 if (inData.gis) calcaqi25("GISpm25", inData.gis.pm25);
-}
+	if (isCDSCOnly) {
+		if (isKiosk) {
+			var aqi = Math.max(calcaqi25(inData.pm25), calcaqi10(inData.pm10));
+			document.getElementById("time").innerHTML = inData.time;
+			document.getElementById("AQIkiosk").innerHTML = aqi;
 
-function aqipm10(inData) {
-	if (inData.station36) calcaqi10("36pm25", inData.station36.pm10);
-	if (inData.cdsc) calcaqi10("CDSCpm25", inData.cdsc.pm10);
-	if (inData.gis) calcaqi10("GISpm25", inData.gis.pm10);
+			setColor(aqi, "AQItr");
+			setFontColor(aqi);
+
+			setAction(aqi);
+			setStyle(aqi);
+			setFontSize(aqi);
+		} else {
+				//handle index.html
+		}
+
+	} else {
+		//Station 36
+		document.getElementById("36zeit").innerHTML = inData.station36.time;
+		document.getElementById("36pm25").innerHTML = (inData.station36.pm25 === 0) ? "Kein PM2.5 Wert" : inData.station36.pm25;
+		document.getElementById("36pm10").innerHTML = (inData.station36.pm25 === 0) ? "Kein PM10 Wert" : inData.station36.pm10;
+		document.getElementById("36aqi25").innerHTML = calcaqi25(inData.station36.pm25);
+		document.getElementById("36aqi10").innerHTML = calcaqi10(inData.station36.pm10);
+		setColor(calcaqi25(inData.station36.pm25), "AQI2536");
+		setColor(calcaqi10(inData.station36.pm10), "AQI1036");
+
+		//CDSC
+		document.getElementById("CDSCzeit").innerHTML = inData.cdsc.time;
+		document.getElementById("CDSCpm25").innerHTML = (inData.cdsc.pm25 === 0) ? "Kein PM2.5 Wert" : inData.cdsc.pm25;
+		document.getElementById("CDSCpm10").innerHTML = (inData.cdsc.pm25 === 0) ? "Kein PM10 Wert" : inData.cdsc.pm10;
+		document.getElementById("CDSCaqi25").innerHTML = calcaqi25(inData.cdsc.pm25);
+		document.getElementById("CDSCaqi10").innerHTML = calcaqi10(inData.cdsc.pm10);
+		setColor(calcaqi25(inData.cdsc.pm25), "AQI25CDSC");
+		setColor(calcaqi10(inData.cdsc.pm10), "AQI10CDSC");
+
+		//GIS
+		document.getElementById("GISzeit").innerHTML = inData.gis.time;
+		document.getElementById("GISpm25").innerHTML = (inData.gis.pm25 === 0) ? "Kein PM2.5 Wert" : inData.gis.pm25;
+		document.getElementById("GISpm10").innerHTML = (inData.gis.pm25 === 0) ? "Kein PM10 Wert" : inData.gis.pm10;
+		document.getElementById("GISaqi25").innerHTML = calcaqi25(inData.gis.pm25);
+		document.getElementById("GISaqi10").innerHTML = calcaqi10(inData.gis.pm10);
+		setColor(calcaqi25(inData.gis.pm25), "AQI25GIS");
+		setColor(calcaqi10(inData.gis.pm10), "AQI10GIS");
+
+		//Average AQI
+		var avg = aqiavg(inData);
+		document.getElementById("AQI").innerHTML = avg.aqi;
+		setColor(avg.aqi, "AQItr");
+
+		// document.getElementById("colordesc").innerHTML = await localforage.getItem("colordesc");
+		// document.getElementById("action").innerHTML = await localforage.getItem("action");
+		// document.getElementById("actionextra").innerHTML = await localforage.getItem("actionextra");
+		// setAction(await localforage.getItem("AQI"), "main");
+		// setColor(await localforage.getItem("AQI"), "info-header");
+		// setColor(await localforage.getItem("AQI"), "info-footer");
+		// setStyle(await localforage.getItem("AQI"), "main");
+
+		setIcon(avg.aqi);
+	}
+
 }
 
 function aqiavg(inData) {
@@ -194,10 +216,6 @@ function aqiavg(inData) {
 	}
 }
 
-function compareaqi(aqiavg25, aqiavg10) {
-	console.log(aqiavg25, aqiavg10);
-
-}
 
 function calcaqi25(pm25) {
 	var pm1 = 0;
