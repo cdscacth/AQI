@@ -67,7 +67,7 @@ function showValue(isKiosk) {
 		if (data.gis.online === 1) {
 			data.gis.time = "Stündlicher Wert vom <b>" + ("0" + GISDatum.getDate()).slice(-2) + "." + ("0" + (GISDatum.getMonth() + 1)).slice(-2) + "." + GISDatum.getFullYear() + "</b> um <b>" + ("0" + GISDatum.getHours()).slice(-2) + ":" + ("0" + GISDatum.getMinutes()).slice(-2) + ":" + ("0" + GISDatum.getSeconds()).slice(-2) + "</b>";
 			GIStime = GISDatum.getTime();
-			localforage.setItem("gis", data.cdsc);
+			localforage.setItem("gis", data.gis);
 		} else {
 			data.gis.time = "GIS-Station ist offline!";
 		}
