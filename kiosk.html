@@ -52,6 +52,6 @@
 		//setInterval(getCDSCData, 60000);
 
 		getData(true);
-		setInterval(getData, 60000);
+		setInterval(function(){getData(true)}, 60000);
 	</script>
 </html>
