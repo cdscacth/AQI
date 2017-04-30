@@ -45,56 +45,82 @@
 		$xml36->loadXML($result36);
 		$tdAnzahl36 = $xml36->getElementsByTagName('td')->length;
 		$pm25td36 = $tdAnzahl36 - 16;
-		$_36pm25 = $xml36->getElementsByTagName('td')->item($pm25td36)->nodeValue;
+		$_36pm25 = intval($xml36->getElementsByTagName('td')->item($pm25td36)->nodeValue);
 		$pm10td36 = $tdAnzahl36 - 17;
-		$_36pm10 = $xml36->getElementsByTagName('td')->item($pm10td36)->nodeValue;
+		$_36pm10 = intval($xml36->getElementsByTagName('td')->item($pm10td36)->nodeValue);
 		$zeittd = $tdAnzahl36 - 18;
 		$_36zeit = $xml36->getElementsByTagName('td')->item($zeittd)->nodeValue;
+		$_36online = 1;
 	}
 	else {
-		$_36zeit = "-";
-		$_36pm25 = "-";
-		$_36pm10 = "-";
+		$_36zeit = 0;
+		$_36pm25 = 0;
+		$_36pm10 = 0;
+		$_36online = 0;
 	}
 	// CDSC
-	$resultcdsc = file_get_contents("http://aq.ajosoft.com/getdata.php?StationID=2053&days=1", NULL, NULL, 83, 47);
-	$CDSCarray = explode(", ", $resultcdsc);
-	if (count($CDSCarray) > 1) {
-		$CDSCzeit = $CDSCarray[0];
-		$CDSCpm10 = $CDSCarray[1];
-		$CDSCaqi10 = $CDSCarray[2];
-		$CDSCpm25 = $CDSCarray[3];
-		$CDSCaqi25 = intval($CDSCarray[4]);
+	$resultcdsc = json_decode(file_get_contents("data/cdsc.json", NULL, NULL), true);
+	$CDSCarray = $resultcdsc[count($resultcdsc)-1];
+	if (count($CDSCarray) > 0) {
+		$CDSCzeit = $CDSCarray["time"];
+		$CDSCpm10 = intval($CDSCarray["pm10"]);
+		$CDSCpm25 = intval($CDSCarray["pm25"]);
+		$CDSCaqi10 = 0;
+		$CDSCaqi25 = 0;
+		$CDSConline = 1;
 	}
 	else {
-		$CDSCzeit = "-";
-		$CDSCpm10 = "-";
-		$CDSCaqi10 = "-";
-		$CDSCpm25 = "-";
-		$CDSCaqi25 = "-";
+		$CDSCzeit = 0;
+		$CDSCpm10 = 0;
+		$CDSCaqi10 = 0;
+		$CDSCpm25 = 0;
+		$CDSCaqi25 = 0;
+		$CDSConline = 0;
 	}
 	// GIS
 	$resultgis = file_get_contents("http://aq.ajosoft.com/getdata.php?StationID=2052&days=1", NULL, NULL, 83, 47);
 	$GISarray = explode(", ", $resultgis);
 	if (count($GISarray) > 1) {
 		$GISzeit = $GISarray[0];
-		$GISpm10 = $GISarray[1];
-		$GISaqi10 = $GISarray[2];
-		$GISpm25 = $GISarray[3];
+		$GISpm10 = intval($GISarray[1]);
+		$GISaqi10 = intval($GISarray[2]);
+		$GISpm25 = intval($GISarray[3]);
 		$GISaqi25 = intval($GISarray[4]);
+		$GISonline = 1;
 	}
 	else {
-		$GISzeit = "-";
-		$GISpm10 = "-";
-		$GISaqi10 = "-";
-		$GISpm25 = "-";
-		$GISaqi25 = "-";
+		$GISzeit = 0;
+		$GISpm10 = 0;
+		$GISaqi10 = 0;
+		$GISpm25 = 0;
+		$GISaqi25 = 0;
+		$GISonline = 0;
 	}
 	// _36zeit, _36pm10, _36pm25
 	// CDSCzeit, CDSCpm10, CDSCaqi10, CDSCpm25, CDSCaqi25
 	// GISzeit, GISpm10, GISaqi10, GISpm25, GISaqi25
-	$send = $_36zeit . ";" . $_36pm25 . ";" . $_36pm10 . ";" . $CDSCzeit . ";" . $CDSCpm25 . ";" . $CDSCaqi25 . ";" . $CDSCpm10 . ";" . $CDSCaqi10 . ";" . $GISzeit . ";" . $GISpm25 . ";" . $GISaqi25 . ";" . $GISpm10 . ";" . $GISaqi10;
-	echo $send;
-	//echo '2017,02,03,19,00,00;100;100;2017-02-03 13:00:00;100;100;100;100;2017-02-03 13:00:00;100;100;100;100';
-
+	$data = array("station36" => array (
+									"time" => $_36zeit,
+									"pm25" => $_36pm25,
+									"pm10" => $_36pm10,
+									"online" => $_36online
+								),
+								"cdsc" => array (
+									"time" => $CDSCzeit,
+									"pm25" => $CDSCpm25,
+									"pm10" => $CDSCpm10,
+									"aqi25" => $CDSCaqi25,
+									"aqi10" => $CDSCaqi10,
+									"online" => $CDSConline
+								),
+								"gis" => array (
+									"time" => $GISzeit,
+									"pm25" => $GISpm25,
+									"pm10" => $GISpm10,
+									"aqi25" => $GISaqi25,
+									"aqi10" => $GISaqi10,
+									"online" => $GISonline
+								),
+	);
+	echo json_encode($data);
 ?>

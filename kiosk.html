@@ -19,25 +19,7 @@
 		<link id="ico" rel="shortcut icon" href="images/icon.png" />
 		<script src="js/localforage.min.js"></script>
 		<script src="js/aqi.js?v=1.5"></script>
-		<script type="text/javascript">
-			async function displayData() {
-				document.getElementById("time").innerHTML = await localforage.getItem("time");
-
-				document.getElementById("AQIkiosk").innerHTML = await localforage.getItem("AQIkiosk");
-				setColor(await localforage.getItem("AQI"), "AQItr");
-				setFontColor(await localforage.getItem("AQI"));
-
-				setAction(await localforage.getItem("AQI"));
-				setStyle(await localforage.getItem("AQI"));
-				setFontSize(await localforage.getItem("AQI"));
-			}
-
-			localforage.clear();
-			getData();
-			setInterval(getData, 60000);
-		</script>
 	</head>
-
 	<body style="background: white;" id="body">
 		<div id="kiosk">
 			<table style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100%; width: 100%">
@@ -65,4 +47,11 @@
 			<div id="aPinat" style="color: black; position: absolute; bottom: 10px; left: 25px; font-size: 200%"><i>&#8211; aPinat</i></div>
 		</div>
 	</body>
+	<script type="text/javascript">
+		//getCDSCData(true);
+		//setInterval(getCDSCData, 60000);
+
+		getData(true);
+		setInterval(getData, 60000);
+	</script>
 </html>
