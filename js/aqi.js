@@ -531,12 +531,12 @@ function chart() {
 			}
 
 			for (var i = 0; i < j; i++) {
-				var pm10 = dataCDSC[i].pm10;
+				var pm10 = calcaqi10(dataCDSC[i].pm10);
 				pm10data.push(pm10);
 			}
 
 			for (var i = 0; i < j; i++) {
-				var pm25 = dataCDSC[i].pm25;
+				var pm25 = calcaqi25(dataCDSC[i].pm25);
 				pm25data.push(pm25);
 			}
 
@@ -570,7 +570,7 @@ function chart() {
 					options: {
 						title: {
 							display: true,
-							text: "CDSC: AQI der letzten 24 Stunden",
+							text: "CDSC: AQI der letzten Stunden",
 							fontSize: 30
 						},
 						scales: {
