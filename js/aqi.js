@@ -221,7 +221,8 @@ function aqiavg(inData) {
 	}
 
 	//Compare AQIs
-	var aqi = Math.max(aqiavg10, aqiavg25);
+	//var aqi = Math.max(aqiavg10, aqiavg25);
+  var aqi = Math.max(CDSCaqi10, CDSCaqi25);
 	console.log(aqi);
 	if (isNaN (aqi) || aqi == 0) {
 		return {"aqi": "Offline!", "kiosk": "Offline!"}
