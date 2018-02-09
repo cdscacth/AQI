@@ -521,24 +521,15 @@ function chart() {
 	xml.onreadystatechange = function() {
 		if (xml.readyState == 4 && xml.status == 200) {
 			var dataCDSC = JSON.parse(xml.responseText);
-			var j = dataCDSC.length;
 			var labels = [];
 			var pm25data = [];
 			var pm10data = [];
 
-			for (var i = 0; i < j; i++) {
+      for (var i = 0; i < dataCDSC.length; i++) {
 				var time = dataCDSC[i].time.replace(/\//g, "-");
 				labels.push(time);
-			}
-
-			for (var i = 0; i < j; i++) {
-				var pm10 = calcaqi10(dataCDSC[i].pm10);
-				pm10data.push(pm10);
-			}
-
-			for (var i = 0; i < j; i++) {
-				var pm25 = calcaqi25(dataCDSC[i].pm25);
-				pm25data.push(pm25);
+        pm10data.push(calcaqi10(dataCDSC[i].pm10));
+        pm25data.push(calcaqi25(dataCDSC[i].pm25));
 			}
 
 			if (chartload == 0) {
