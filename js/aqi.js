@@ -1,7 +1,7 @@
 var XML = new XMLHttpRequest();
 var firstRequest = 1;
 
-function getData(isKiosk) {
+function getData(isKiosk, isCDSCOnly) {
 	//{"station36":{"time":"2017,04,29,19,00,00","pm25":12,"pm10":43,"online":1},"cdsc":{"time":2017,"pm25":18,"pm10":25,"aqi25":64,"aqi10":23,"online":1},"gis":{"time":0,"pm25":0,"pm10":0,"aqi25":0,"aqi10":0,"online":0}}
 	var url = "fetchData.php";
 	XML.onreadystatechange = function(){showValue(isKiosk)};
@@ -85,57 +85,21 @@ function showValue(isKiosk) {
 	}
 }
 
-/*
-function getCDSCData(isKiosk) {
-	var url ="data/cdsc.json";
-	XML.onreadystatechange = function () {
-		if (XML.readyState == 4) {
-			var data = {};
-			data = JSON.parse(XML.responseText);
-			var lastReading = data[data.length-1];
-
-			displayData(lastReading, true, isKiosk)
-		}
-	}
-	XML.open("GET", url, true);
-	XML.send();
-}
-*/
-
 function displayData(inData, isCDSCOnly, isKiosk) {
 	console.log(inData, isCDSCOnly);
-	/*
-	if (isCDSCOnly) {
-		if (isKiosk) {
-			var aqi = Math.max(calcaqi25(inData.pm25), calcaqi10(inData.pm10));
-			var time = new Date(inData.time);
-			document.getElementById("time").innerHTML = "Wert am <b>" + ("0" + time.getDate()).slice(-2) + "." + ("0" + (time.getMonth() + 1)).slice(-2) + "." + time.getFullYear() + ", " + ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2) + " Uhr</b>";
-			document.getElementById("AQIkiosk").innerHTML = aqi;
 
-			setColor(aqi, "AQItr");
-			setFontColor(aqi);
-
-			setAction(aqi);
-			setStyle(aqi);
-			setFontSize(aqi);
-			setIcon(aqi);
-		}
-	}
-	*/
 	if (isKiosk) {
-		var avg = aqiavg(inData);
 		var time = new Date(inData.time);
 		document.getElementById("time").innerHTML = inData.cdsc.kiosk;
-		document.getElementById("AQIkiosk").innerHTML = avg.kiosk;
-
-		setColor(avg.aqi, "AQItr");
-		setFontColor(avg.aqi);
-
-		setAction(avg.aqi);
-		setStyle(avg.aqi);
-		setFontSize(avg.aqi);
-		setIcon(avg.aqi);
-	} else {
+	} else if (isCDSCOnly) {
+    document.getElementById("CDSCzeit").innerHTML = inData.time;
+		document.getElementById("CDSCpm25").innerHTML = (inData.pm25 === 0) ? "Kein PM2.5 Wert" : inData.pm25;
+		document.getElementById("CDSCpm10").innerHTML = (inData.pm25 === 0) ? "Kein PM10 Wert" : inData.pm10;
+		document.getElementById("CDSCaqi25").innerHTML = calcaqi25(inData.pm25);
+		document.getElementById("CDSCaqi10").innerHTML = calcaqi10(inData.pm10);
+		setColor(calcaqi25(inData.pm25), "AQI25CDSC");
+		setColor(calcaqi10(inData.pm10), "AQI10CDSC");
+  } else {
 		//Station 36
 		document.getElementById("36zeit").innerHTML = inData.station36.time;
 		document.getElementById("36pm25").innerHTML = (inData.station36.pm25 === 0) ? "Kein PM2.5 Wert" : inData.station36.pm25;
@@ -162,75 +126,47 @@ function displayData(inData, isCDSCOnly, isKiosk) {
 		document.getElementById("GISaqi10").innerHTML = calcaqi10(inData.gis.pm10);
 		setColor(calcaqi25(inData.gis.pm25), "AQI25GIS");
 		setColor(calcaqi10(inData.gis.pm10), "AQI10GIS");
-
-		//Average AQI
-		var avg = aqiavg(inData);
-		document.getElementById("AQI").innerHTML = avg.aqi;
-		setColor(avg.aqi, "AQItr");
-
-		setColor(avg.aqi, "info-header");
-		setColor(avg.aqi, "info-footer");
-
-		setAction(avg.aqi, "main");
-		setStyle(avg.aqi, "main");
-
-		setIcon(avg.aqi);
 	}
 
+  //Average AQI
+  if (isCDSCOnly) {
+    var avg = aqiavg(inData.pm25, inData.pm10);
+  } else {
+    var avg = aqiavg(inData.cdsc.pm25, inData.cdsc.pm10);
+  }
+
+  setColor(avg.aqi, "AQItr");
+  setIcon(avg.aqi);
+  setFontColor(avg.aqi);
+
+  if (isKiosk) {
+    document.getElementById("AQIkiosk").innerHTML = avg.kiosk;
+    setAction(avg.aqi);
+    setStyle(avg.aqi);
+    setFontSize(avg.aqi);
+    setIcon(avg.aqi);
+  } else {
+    document.getElementById("AQI").innerHTML = avg.aqi;
+    setColor(avg.aqi, "info-header");
+    setColor(avg.aqi, "info-footer");
+    setAction(avg.aqi, "main");
+    setStyle(avg.aqi, "main");
+  }
 }
 
-function aqiavg(inData) {
-	var _36pm25 =  calcaqi25(inData.station36.pm25);
-	var _36pm10 =  calcaqi10(inData.station36.pm10);
-	var CDSCaqi25 =  calcaqi25(inData.cdsc.pm25);
-	var CDSCaqi10 =  calcaqi10(inData.cdsc.pm10);
-	var GISaqi25 =  calcaqi25(inData.gis.pm25);
-	var GISaqi10 =  calcaqi10(inData.gis.pm10);
-	var arrayAQI10 = [];
-	var arrayAQI25 = [];
-
-	var aqiavg25 = 0;
-	var aqiavg10 = 0;
-
-	if (_36pm25 != "Kein PM2.5-Wert") arrayAQI25.push(_36pm25);
-	if (GISaqi25 != "Kein PM2.5-Wert") arrayAQI25.push(GISaqi25);
-	if (_36pm10 != "Kein PM10-Wert") arrayAQI10.push(_36pm10);
-	if (GISaqi10 != "Kein PM10-Wert") arrayAQI10.push(GISaqi10);
-
-	//PM2.5
-	var sumaqi25 = 0;
-	for (var i = 0; i < arrayAQI25.length; i++) {
-		sumaqi25 += parseFloat(arrayAQI25[i]);
-		console.log(sumaqi25);
-	}
-	aqiavg25 = sumaqi25 / arrayAQI25.length;
-	console.log(aqiavg25);
-	if (CDSCaqi25 != "Kein PM2.5-Wert") {
-		aqiavg25 = (parseFloat(aqiavg25) + parseFloat(CDSCaqi25)) / 2;
-	}
-
-	//PM10
-	var sumaqi10 = 0;
-	for (var i = 0; i < arrayAQI10.length; i++) {
-		sumaqi10 += parseFloat(arrayAQI10[i]);
-	}
-	var aqiavg10 = sumaqi10 / arrayAQI10.length;
-
-	if (CDSCaqi10 != "Kein PM10-Wert") {
-		aqiavg10 = (parseFloat(aqiavg10) + parseFloat(CDSCaqi10)) / 2;
-	}
+function aqiavg(pm25, pm10) {
+	var CDSCaqi25 = calcaqi25(pm25);
+	var CDSCaqi10 = calcaqi10(pm10);
 
 	//Compare AQIs
-	//var aqi = Math.max(aqiavg10, aqiavg25);
   var aqi = Math.max(CDSCaqi10, CDSCaqi25);
-	console.log(aqi);
+	//console.log(aqi);
 	if (isNaN (aqi) || aqi == 0) {
 		return {"aqi": "Offline!", "kiosk": "Offline!"}
 	} else {
 		 return {"aqi": aqi.toFixed(2), "kiosk": aqi.toFixed(0)}
 	}
 }
-
 
 function calcaqi25(pm25) {
 	var pm1 = 0;
@@ -269,7 +205,6 @@ function calcaqi25(pm25) {
 		} else if (pm25 >= pm7 && pm25 <= pm8) {
 			aqipm25 = ((aqi8 - aqi7) / (pm8 - pm7)) * (pm25 - pm7) + aqi7;
 		}
-		console.log(aqipm25);
 		return aqipm25.toFixed(2)
 	} else {
 		 return "Kein PM2.5-Wert"
@@ -313,7 +248,6 @@ function calcaqi10(pm10) {
 		} else if (pm10 >= pm7 && pm10 <= pm8) {
 			aqipm10 = ((aqi8 - aqi7) / (pm8 - pm7)) * (pm10 - pm7) + aqi7;
 		}
-		console.log(aqipm10.toFixed(2));
 		return aqipm10.toFixed(2)
 	} else {
 		 return "Kein PM10-Wert"
@@ -321,7 +255,6 @@ function calcaqi10(pm10) {
 }
 
 function setColor(aqivalue, AQItd) {
-	console.log(aqivalue, AQItd);
 	if (aqivalue < 50) {
 		document.getElementById(AQItd).style.backgroundColor = "#00ff00";
 		document.getElementById(AQItd).style.color = "black";
@@ -352,16 +285,12 @@ function setColor(aqivalue, AQItd) {
 function setFontColor(aqivalue) {
 	if (aqivalue < 200) {
 		document.getElementById("time").style.color = "black";
-		document.getElementById("aPinat").style.color = "black";
 	} else if (aqivalue < 350) {
 		document.getElementById("time").style.color = "white";
-		document.getElementById("aPinat").style.color = "white";
 	} else if (aqivalue >= 350) {
 		document.getElementById("time").style.color = "white";
-		document.getElementById("aPinat").style.color = "white";
 	} else if (aqivalue == "Kein PM10-Wert" || aqivalue == "Kein PM2.5-Wert" || aqivalue == "Offline!") {
 		document.getElementById("time").style.color = "black";
-		document.getElementById("aPinat").style.color = "black";
 	}
 }
 
@@ -521,6 +450,7 @@ function chart() {
 	xml.onreadystatechange = function() {
 		if (xml.readyState == 4 && xml.status == 200) {
 			var dataCDSC = JSON.parse(xml.responseText);
+      displayData(dataCDSC[dataCDSC.length-1], true, false);
 			var labels = [];
 			var pm25data = [];
 			var pm10data = [];
@@ -579,7 +509,6 @@ function chart() {
 					}
 				});
 				chartload = 1;
-				console.log('CDSCchart geladen.');
 			} else {
 				CDSCchart.data.labels = labels;
 				CDSCchart.data.datasets[0].data = pm10data;
