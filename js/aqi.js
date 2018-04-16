@@ -268,10 +268,10 @@ function setColor(aqivalue, AQItd) {
 		document.getElementById(AQItd).style.backgroundColor = "#ff0000";
 		document.getElementById(AQItd).style.color = "black";
 	} else if (aqivalue < 300) {
-		document.getElementById(AQItd).style.backgroundColor = "#cc0000";
+		document.getElementById(AQItd).style.backgroundColor = "#540099";
 		document.getElementById(AQItd).style.color = "white";
 	} else if (aqivalue < 350) {
-		document.getElementById(AQItd).style.backgroundColor = "#674ea7";
+		document.getElementById(AQItd).style.backgroundColor = "#800000";
 		document.getElementById(AQItd).style.color = "white";
 	} else if (aqivalue >= 350) {
 		document.getElementById(AQItd).style.backgroundColor = "#000000";
