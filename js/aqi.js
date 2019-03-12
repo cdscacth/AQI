@@ -4,7 +4,7 @@ var firstRequest = 1;
 function getData(isKiosk, isCDSCOnly) {
 	//{"station36":{"time":"2017,04,29,19,00,00","pm25":12,"pm10":43,"online":1},"cdsc":{"time":2017,"pm25":18,"pm10":25,"aqi25":64,"aqi10":23,"online":1},"gis":{"time":0,"pm25":0,"pm10":0,"aqi25":0,"aqi10":0,"online":0}}
 	var url = "fetchData.php";
-	XML.onreadystatechange = function(){showValue(isKiosk)};
+	XML.onreadystatechange1 = function(){showValue(isKiosk)};
 	XML.open("GET", url, true);
 	XML.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	XML.send();
@@ -390,9 +390,9 @@ function setIcon(aqivalue) {
 	} else if (aqivalue < 200) {
 		document.getElementById("ico").setAttribute("href", "images/ff0000.png");
 	} else if (aqivalue < 300) {
-		document.getElementById("ico").setAttribute("href", "images/cc0000.png");
-	} else if (aqivalue < 350) {
 		document.getElementById("ico").setAttribute("href", "images/674ea7.png");
+	} else if (aqivalue < 350) {
+		document.getElementById("ico").setAttribute("href", "images/cc0000.png");
 	} else if (aqivalue >= 350) {
 		document.getElementById("ico").setAttribute("href", "images/000000.png");
 	}
