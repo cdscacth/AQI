@@ -1,14 +1,10 @@
 function getData(isKiosk, isCDSCOnly) {
 	fetch('data/cdsc.json')
 	  .then(response => response.json())
-	  .then(data => showValue(data, true));
+	  .then(data => displayData(data));
 }
 
-function showValue(data, isKiosk) {
-	displayData(data, isKiosk);
-}
-
-function displayData(inData, isKiosk) {
+function displayData(inData) {
 	console.log(inData);
 	document.getElementById("time").innerHTML = inData.time;
 
@@ -16,13 +12,13 @@ function displayData(inData, isKiosk) {
     setIcon(inData.aqi);
     setFontColor(inData.aqi);
 
-	if (isKiosk) {
-		document.getElementById("AQIkiosk").innerHTML = inData.aqi;
-		setAction(inData.aqi);
-		setStyle(inData.aqi);
-		setFontSize(inData.aqi);
-		setIcon(inData.aqi);
-    }
+	
+	document.getElementById("AQIkiosk").innerHTML = inData.aqi;
+	setAction(inData.aqi);
+	setStyle(inData.aqi);
+	setFontSize(inData.aqi);
+	setIcon(inData.aqi);
+
 }
 
 function setColor(aqivalue, AQItd) {
@@ -103,7 +99,7 @@ function setFontSize(aqivalue) {
 	}
 }
 
-function setAction(aqivalue, site) {
+function setAction(aqivalue) {
 	if (aqivalue < 50) {
 		document.getElementById("action").innerHTML = action[0].action;
 	} else if (aqivalue < 100) {
@@ -120,34 +116,6 @@ function setAction(aqivalue, site) {
 		document.getElementById("action").innerHTML = action[6].action;
 	} else if (aqivalue == "Kein PM10-Wert" || aqivalue == "Kein PM2.5-Wert" || aqivalue == "Offline!") {
 		document.getElementById("action").innerHTML = action[7].action;
-	}
-
-	if (site == "main") {
-		if (aqivalue < 50) {
-			document.getElementById("colordesc").innerHTML = action[0].colordesc;
-			document.getElementById("actionextra").innerHTML = action[0].actionextra;
-		} else if (aqivalue < 100) {
-			document.getElementById("colordesc").innerHTML = action[1].colordesc;
-			document.getElementById("actionextra").innerHTML = action[1].actionextra;
-		} else if (aqivalue < 150) {
-			document.getElementById("colordesc").innerHTML = action[2].colordesc;
-			document.getElementById("actionextra").innerHTML = action[2].actionextra;
-		} else if (aqivalue < 200) {
-			document.getElementById("colordesc").innerHTML = action[3].colordesc;
-			document.getElementById("actionextra").innerHTML = action[3].actionextra;
-		} else if (aqivalue < 300) {
-			document.getElementById("colordesc").innerHTML = action[4].colordesc;
-			document.getElementById("actionextra").innerHTML = action[4].actionextra;
-		} else if (aqivalue < 350) {
-			document.getElementById("colordesc").innerHTML = action[5].colordesc;
-			document.getElementById("actionextra").innerHTML = action[5].actionextra;
-		} else if (aqivalue >= 350) {
-			document.getElementById("colordesc").innerHTML = action[6].colordesc;
-			document.getElementById("actionextra").innerHTML = action[6].actionextra;
-		} else if (aqivalue == "Kein PM10-Wert" || aqivalue == "Kein PM2.5-Wert" || aqivalue == "Offline!") {
-			document.getElementById("colordesc").innerHTML = action[7].colordesc;
-			document.getElementById("actionextra").innerHTML = action[7].actionextra;
-		}
 	}
 }
 
@@ -182,27 +150,27 @@ var action = {
 	},
 	"2": {
 		"colordesc": "Ungesund für sensible Gruppen (AQI 100 - 149)",
-		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Sportunterricht & AGs finden nur mit geringen Belastungen statt.</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt.</li>",
+		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Sportunterricht & AGs finden nur mit geringen Belastungen statt.</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt.</li>",
 		"actionextra": "-"
 	},
 	"3": {
 		"colordesc": "Ungesund (AQI 150 - 199)",
-		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.*</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Die Sport AGs entfallen.**</li>",
+		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Die Sport AGs entfallen.</li>",
 		"actionextra": "* Die Entscheidung, ob die Andacht stattfindet oder die Klassenlehrer mit ihren Klassen in den Klassenraum gehen, wird in der Dienstbesprechung getroffen. Als Richtwert gilt ein AQI von 175.<br>** Die Entscheidung, ob die AGs stattfinden oder entfallen, wird um 13:15 Uhr von Schulleitung und Athletic Director getroffen und umgehend veröffentlicht. Gleiches gilt für CMAC Wettbewerbe."
 	},
 	"4": {
 		"colordesc": "Sehr Ungesund (AQI 200 - 299)",
-		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Schulschluss nach dem Mittagessen.*</li>",
+		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li>",
 		"actionextra": "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine bleibt in Absprache mit der Schulleitung geöffnet. Das Mittagessen kann im Klassenraum eingenommen werden."
 	},
 	"5": {
-		"colordesc": "Gesundheitsschädigend (AQI 300 - 399)",
-		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.<li>Alle halten sich in geschlossenen Räumen auf.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden zur Verfügung gestellt und nach Möglichkeit getragen.</li><li>Schulschluss zum Mittagessen.*</li>",
+		"colordesc": "Gesundheitsschädigend (AQI 300 - 349)",
+		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Evtl. Schulschluss um 13:05 Uhr</li>",
 		"actionextra": "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine wird in Absprache mit der Schulleitung geschlossen. Ggf. kann das Mittagessen noch im Klassenraum eingenommen werden."
 	},
 	"6": {
-		"colordesc": "Gefährlich (AQI ab 400)",
-		"action": "Schulfrei*",
+		"colordesc": "Gefährlich (AQI ab 350)",
+		"action": "<li>Evtl. schulfrei</li>",
 		"actionextra": "* Schulfrei, wenn der Durchschnittswert von 5:00 Uhr bis 7:00 Uhr > 350 ist. Entscheidung und Bekanntgabe durch die Schulleitung und Athletic Director um 07:15 Uhr."
 	},
 	"7": {
