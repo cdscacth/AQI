@@ -14,6 +14,7 @@ function displayData(inData) {
 
 	
 	document.getElementById("AQIkiosk").innerHTML = inData.aqi;
+	document.getElementById("pm25").innerHTML = inData.pm25 + " µg/m³";
 	setAction(inData.aqi);
 	setStyle(inData.aqi);
 	setFontSize(inData.aqi);
@@ -155,17 +156,17 @@ var action = {
 	},
 	"3": {
 		"colordesc": "Ungesund (AQI 150 - 199)",
-		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Die Sport AGs entfallen.</li>",
+		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.</li><li>Die Sport AGs entfallen.</li>",
 		"actionextra": "* Die Entscheidung, ob die Andacht stattfindet oder die Klassenlehrer mit ihren Klassen in den Klassenraum gehen, wird in der Dienstbesprechung getroffen. Als Richtwert gilt ein AQI von 175.<br>** Die Entscheidung, ob die AGs stattfinden oder entfallen, wird um 13:15 Uhr von Schulleitung und Athletic Director getroffen und umgehend veröffentlicht. Gleiches gilt für CMAC Wettbewerbe."
 	},
 	"4": {
 		"colordesc": "Sehr Ungesund (AQI 200 - 299)",
-		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li>",
+		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li>",
 		"actionextra": "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine bleibt in Absprache mit der Schulleitung geöffnet. Das Mittagessen kann im Klassenraum eingenommen werden."
 	},
 	"5": {
 		"colordesc": "Gesundheitsschädigend (AQI 300 - 349)",
-		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Der Sportunterricht findet im Klassenraum statt.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Evtl. Schulschluss um 13:05 Uhr</li>",
+		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Evtl. Schulschluss um 13:05 Uhr</li>",
 		"actionextra": "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine wird in Absprache mit der Schulleitung geschlossen. Ggf. kann das Mittagessen noch im Klassenraum eingenommen werden."
 	},
 	"6": {

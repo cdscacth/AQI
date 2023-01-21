@@ -57,9 +57,18 @@ td > div {
     margin-right: auto;
 }
 
+.pm {
+    font-size: 2em;
+    font-style: italic;
+}
+
 .text {
-    font-size: 125%;
+    font-size: 0.6em;
     font-weight: bold;
+}
+
+.aqi {
+    font-size: 20em;
 }
 
 #links {
