@@ -8,7 +8,7 @@ function displayData(inData) {
 	console.log(inData);
 	document.getElementById("time").innerHTML = inData.time;
 
-    setColor(inData.aqi, "AQItr");
+    setColor(inData.aqi, "body");
     setIcon(inData.aqi);
     setFontColor(inData.aqi);
 
@@ -17,7 +17,7 @@ function displayData(inData) {
 	document.getElementById("pm25").innerHTML = inData.pm25 + " µg/m³";
 	setAction(inData.aqi);
 	setStyle(inData.aqi);
-	setFontSize(inData.aqi);
+	//setFontSize(inData.aqi);
 	setIcon(inData.aqi);
 
 }
@@ -141,42 +141,34 @@ function setIcon(aqivalue) {
 var action = {
 	"0": {
 		"colordesc": "Gut (AQI bis 49)",
-		"action": "Keine Einschränkungen",
-		"actionextra": "-"
+		"action": "Keine Einschränkungen"
 	},
 	"1": {
 		"colordesc": "Moderat (AQI 50 - 99)",
-		"action": "Keine Einschränkungen",
-		"actionextra": "-"
+		"action": "Keine Einschränkungen"
 	},
 	"2": {
 		"colordesc": "Ungesund für sensible Gruppen (AQI 100 - 149)",
-		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Sportunterricht & AGs finden nur mit geringen Belastungen statt.</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt.</li>",
-		"actionextra": "-"
+		"action": "<ul><li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Sportunterricht & AGs finden nur mit geringen Belastungen statt.</li><li>Außenaktivitäten im Kindergarten finden nur in einem geringen Umfang statt.</li></ul>"
 	},
 	"3": {
 		"colordesc": "Ungesund (AQI 150 - 199)",
-		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.</li><li>Die Sport AGs entfallen.</li>",
-		"actionextra": "* Die Entscheidung, ob die Andacht stattfindet oder die Klassenlehrer mit ihren Klassen in den Klassenraum gehen, wird in der Dienstbesprechung getroffen. Als Richtwert gilt ein AQI von 175.<br>** Die Entscheidung, ob die AGs stattfinden oder entfallen, wird um 13:15 Uhr von Schulleitung und Athletic Director getroffen und umgehend veröffentlicht. Gleiches gilt für CMAC Wettbewerbe."
+		"action": "<ul><li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Alle halten sich nach Möglichkeit in geschlossenen Räumen auf.</li><li>Sport AGs im Freien und evtl. CMAC-Veranstaltungen entfallen.</li><li>Das Essen erfolgt im Klassenraum.</li><li>Alle halten sich in geschlossenen Räumen auf.</li></ul>"
 	},
 	"4": {
 		"colordesc": "Sehr Ungesund (AQI 200 - 299)",
-		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li>",
-		"actionextra": "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine bleibt in Absprache mit der Schulleitung geöffnet. Das Mittagessen kann im Klassenraum eingenommen werden."
+		"action": "<ul><li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Geschlossene Räume werden nur in Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang, kurzer Gang zur Kantine) verlassen.</li><li>Der Sportunterricht findet im Geräteraum statt.</li><li>Die Sport AGs entfallen.</li><li>Schutzmasken sollen getragen werden.</li></ul>"
 	},
 	"5": {
 		"colordesc": "Gesundheitsschädigend (AQI 300 - 349)",
-		"action": "<li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Evtl. Schulschluss um 13:05 Uhr</li>",
-		"actionextra": "* Schulschluss ab 12:15 Uhr bzw. 13:05 Uhr und Absage der AGs, sobald der Wert am Vormittag für zwei Stunden > 250 ist. Die Kantine wird in Absprache mit der Schulleitung geschlossen. Ggf. kann das Mittagessen noch im Klassenraum eingenommen werden."
+		"action": "<ul><li>Fenster und Türen geschlossen halten. Klimaanlagen werden eingeschaltet.</li><li>Geschlossene Räume werden nur in dringenden Ausnahmefällen (wie z.B. Raumwechsel, Toilettengang) verlassen.</li><li>Schutzmasken werden nach Möglichkeit getragen.</li><li>Der Sportunterricht findet im Geräteraum statt.</li><li>Die Sport AGs entfallen.</li><li>Schutzmasken sollen getragen werden.</li><li>Evtl. Schulschluss um 13:05 Uhr.</li></ul>"
 	},
 	"6": {
 		"colordesc": "Gefährlich (AQI ab 350)",
-		"action": "<li>Evtl. schulfrei</li>",
-		"actionextra": "* Schulfrei, wenn der Durchschnittswert von 5:00 Uhr bis 7:00 Uhr > 350 ist. Entscheidung und Bekanntgabe durch die Schulleitung und Athletic Director um 07:15 Uhr."
+		"action": "Evtl. schulfrei."
 	},
 	"7": {
 		"colordesc": "Offline!",
-		"action": "Offline!",
-		"actionextra": "-"
+		"action": "Offline!"
 	}
 }
